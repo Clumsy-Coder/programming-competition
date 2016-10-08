@@ -1,0 +1,3 @@
+https://open.kattis.com/contests/na16warmup1
+
+solve problems A to I
