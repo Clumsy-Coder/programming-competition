@@ -10,10 +10,6 @@ using std::endl;
 using std::string;
 using std::vector;
 
-int dollar = 0;
-int cent = 0;
-
-
 struct charType
 {
 	char character;
@@ -21,11 +17,19 @@ struct charType
 
 };
 
+long long dollar = 0;
+int cent = 0;
+
 vector<charType> charList;
 vector<string> artical;
 
+void printCharList();
+void printArticleList();
+
+
 int findChar(char charValue)
 {
+	// cout << charValue << endl;
 	int value = 0;
 
 	for (unsigned int i = 0; i < charList.size(); i++)
@@ -44,24 +48,32 @@ void calculate()
 {
 	for (unsigned int i = 0; i < artical.size(); i++)
 	{
-		cout << artical[i] << endl;
-		/*
-		for (unsigned int k = 0; k < artical[i]; k++)
+		string tempString = artical[i];
+		//cout << tempString << endl;
+		
+		for (unsigned int k = 0; k < tempString.size(); k++)
 		{
-
-			
-			int tempValue = findChar(artical[i][k]);
+			int tempValue = findChar(tempString[k]);
+			//cout << tempValue << " ";
 			if(tempValue > 0)
 			{
-				if(cent + tempValue > 100)
+				if(cent + tempValue >= 100)
 				{
+					//cout << "." << endl;
 					dollar++;
 					cent = (cent + tempValue) % 100;
 				}
+
+				else
+				{
+					cent += tempValue;
+				}
+
+
 			}
 			
 		}
-		*/
+		
 	}
 
 }
@@ -87,43 +99,63 @@ int main()
 			charList[charList.size() - 1].value = tempInt;
 		}
 
-		
+		//printCharList();
+
 		int articalNum = 0;
 		cin >> articalNum;
 
-		cout <<endl << "artical NUM: " << articalNum << endl;
+		// cout <<endl << "artical NUM: " << articalNum << endl;
 		string tempString;
 		for(int k = 0; k <= articalNum; k++)
 		{
-			cout << "k: " << k << endl;
+			// cout << "k: " << k << endl;
 			
 			getline(cin, tempString);
-			cout << "tempString: " << tempString << endl;
+			// cout << "tempString: " << tempString << endl;
 			artical.push_back(tempString);
 
 		}
 
-		cout << "-----------------------------" << endl;
-		cout << "artical.size(): " << artical.size() << endl;
-		for (int k = 0; k < artical.size(); k++)
-		{
-			cout << artical[k] << endl;
-		}
+		//for some reason the first element is empty, remove it.
+		artical.erase(artical.begin());
+		//printArticleList();
 
-		cout << "-----------------------------" << endl;
-
-		/*
+		
 		calculate();
 		cout << dollar << ".";
-		//cent << "$" << endl;
+		// cent = 10;
 		if(cent < 10)
 		{
 			cout << std::setfill('0') << std::setw(2) << cent << "$" << endl;
 		}
-		*/
+
+		else
+		{
+			cout << cent << "$" << endl;
+		}
 		
 
 	}	
 
 	return 0;
+}
+
+void printCharList()
+{
+	cout << "CharList vector size: " << charList.size() << endl;
+	for (unsigned int i = 0; i < charList.size(); ++i)
+	{
+		cout << "[" << i << "]: " << charList[i].character << " " << charList[i].value << endl;
+	}
+
+}
+
+void printArticleList()
+{
+	cout << "Article vector size: " << artical.size() << endl;
+	for (unsigned int i = 0; i < artical.size(); i++)
+	{
+		cout << "[" << i << "]: " << artical[i] << endl;
+	}
+
 }
