@@ -12,58 +12,54 @@
 #open the terminal
 #change directory to where this makefile and the target file is visible
 #	NOTE: both the makefile and the target file MUST be in the same directory.
-# type the following. NOTE: <target> is the filename to be compiled. NO file extensions
-#	make target=<target>
+# type the following. NOTE: <filename> is the filename to be compiled. NO file extensions
+#	make <filename>
 
 #example:
-#	make target=01124
+#	make 01124
 
 #--------------------------------------------
 
-#to cleanup object files
+#to cleanup object files and compiled file
 
 #open the terminal
 #change directory to where this makefile and the target file is visible.
 #	NOTE: both the makefile and the target file MUST be in the same directory.
-#type the following. NOTE: <target> is the filename to be removed. NO file extensions
-#	make clean target=<target>
-
-#example:
-#	make clean target=01124
+#type the following.
+#	make clean
 
 #--------------------------------------------
 
-#to cleanup object files and compiled files
-#type the following. NOTE <target> is the filename to be removed. NO file extensions
-#	make clean-all target=<target>
-
-#example:
-#	make clean-all target=01224
-
-#--------------------------------------------
-
-OBJS = $(target).o
 CC = g++
-CFLAGS = -Wall -g -std=c++11
-INCLUDE = -I./$(target)
+CFLAGS = -Wall -g
+MAKECMDGOALS := $(filter-out clean, $(MAKECMDGOALS))
+INCLUDE = -I./$(MAKECMDGOALS)
+OBJS = $(MAKECMDGOALS).o
 
-#default command to run
-all : Main-$(target) clean run
+.PHONY: $(MAKECMDGOALS) clean
 
-#compile and build
-Main-$(target) : $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
+# command for compiling source file, removing any junk files,
+# creates a .in file in inputFiles folder
+# and running the compiled file with the .in file as the input
+# to use command, type the following
+# make <filename>
+#
+# note: the command does not take file extentions.
+# example:
+# make helloWorld
+#
+# Assumes the source file is .cpp
+$(MAKECMDGOALS): $(OBJS)
+	$(CC) $(CFLAGS) $^ -o Main-$@
+	rm -rf *.o *~ *% *# .#*
+	touch inputFiles/$(MAKECMDGOALS).in
+	./Main-$(MAKECMDGOALS) < inputFiles/$(MAKECMDGOALS).in
 %.o : %.cpp
 	$(CC) -c $(CFLAGS) $<
 
-#remove object and any other garbage files.
+# for cleaning up the compiled file and any junk files.
+# to use command, type the following:
+# make clean
 clean:
-	rm -rf -d $(target).o *~ *% *# .#*
-
-#remove the compiled file
-clean-all:
-	$(clean) rm Main-$(target)
-
-#run the compiled file
-run:
-	./Main-$(target)
+	rm -rf *.o *~ *% *# .#*
+	rm Main-*
