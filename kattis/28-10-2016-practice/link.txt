@@ -1,1 +1,1 @@
-https://rmc16.kattis.com/
+https://open.kattis.com/contests/rmc16practice
