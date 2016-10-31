@@ -7,6 +7,32 @@ using namespace std;
 
 int main()
 {
+    /*
+        get the input. offset and word
+        reverse the word
+        for size word
+            if current char is _
+                int temp = 91
+            else if current char is .
+                int temp = 92
+            else
+                int temp = (int)word[i]
+
+            string newStr
+            if int temp + offset >= 91
+                if temp + offset == 91
+                    newStr += '_'
+                if temp + offset == 92
+                    newStr += '.'
+                else
+                    temp += offset
+                    newStr += ((char)temp % 28) + 56
+            else
+                newStr += (char)temp + offset
+
+        print newStr
+    */
+
     int offset;
     string word;
 
