@@ -2,94 +2,44 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <cctype>
 
 using namespace std;
 
+char table[28] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', '.'};
+
 int main()
 {
-    /*
-        get the input. offset and word
-        reverse the word
-        for size word
-            if current char is _
-                int temp = 91
-            else if current char is .
-                int temp = 92
-            else
-                int temp = (int)word[i]
-
-            string newStr
-            if int temp + offset >= 91
-                if temp + offset == 91
-                    newStr += '_'
-                if temp + offset == 92
-                    newStr += '.'
-                else
-                    temp += offset
-                    newStr += ((char)temp % 28) + 56
-            else
-                newStr += (char)temp + offset
-
-        print newStr
-    */
-
     int offset;
     string word;
 
     while((cin >> offset >> word) && offset != 0)
     {
-        if(offset == 0)
-        {
-            break;
-        }
         reverse(word.begin(), word.end());
-        string tempstr;
-        bool isTrue = false;
+        string answer = "";
         for(int i = 0; i < word.size(); i++)
         {
-            int temp = 0;
+            if(isalpha(word[i]))
+            {
+                answer += table[(word[i] - 'A' + offset) % 28];
+                continue;
+            }
+
             if(word[i] == '_')
             {
-                temp = 91;
-
-            }
-            else if(word[i] == '.')
-            {
-                temp = 92;
-            }
-            else
-            {
-                temp = word[i];
+                answer += table[(26 + offset) % 28];
+                continue;
             }
 
-            if(temp + offset >= 91)
+            if(word[i] == '.')
             {
-                //if temp + offset == 91
-                if(temp + offset == 91)
-                {
-                    tempstr += '_';
-                }
-                //if temp + offset == 28
-                else if(temp + offset == 92)
-                {
-                    tempstr += '.';
-                }
-                else
-                {
-                    temp += offset;
-                    tempstr += ((char)temp % 28) + 56;
-                }
-
-            }
-
-            else
-            {
-                tempstr += (char)temp + offset;
+                answer += table[(27 + offset) % 28];
+                continue;
             }
 
         }
 
-        cout << tempstr << endl;
+        cout << answer << endl;
 
     }
 
