@@ -1,7 +1,8 @@
-//IN PROGRESS
+//DONE
 #include <iostream>
 #include <vector>
 #include <limits>
+#include <cstdlib>
 
 using namespace std;
 
@@ -21,20 +22,14 @@ int main()
 	{
 		for(int i = 0; i < n; i++)
 		{
-			int nValue = 0;
-			cin >> nValue;
-			// nList.push_back(nValue);
-			nList[i] = nValue;
+			cin >> nList[i];
 		}
 
 		
 		cin >> m;
 		for(int i = 0; i < m; i++)
 		{
-			int mValue = 0;
-			cin >> mValue;
-			// mList.push_back(mValue);
-			mList[i] = mValue;
+			cin >> mList[i];
 		}
 		
 		cout << "Case " << cases++ << ":" << endl;
@@ -42,7 +37,6 @@ int main()
 		{
 			solve(mList[i]);
 		}
-
 
 	}
 
@@ -53,7 +47,8 @@ void solve(int query)
 {
 	int first;
 	int second;
-	int smallest = 0; //contains the value in nList.
+	int smallest_diff = numeric_limits<int>::max(); //contains the value in nList.
+	int best_sum;
 	for(int i = 0 ; i < n; i++)
 	{
 		first = nList[i];
@@ -61,14 +56,18 @@ void solve(int query)
 		for(int k = i + 1; k < n; k++)
 		{
 			second = nList[k];
-			if(first + second >= smallest &&
-			   first + second <= query)
+			int temp = first + second;
+			
+			//check the absolute difference of the query and the sum of first + second
+			//	it must be smaller than the smallest_diff (which contains the smallest value closest to query)
+			if(abs(query - temp) <= smallest_diff)
 			{
-				smallest = first + second;
+				smallest_diff = abs(query - temp);
+				best_sum = first+second;
 			}
 
 		}
 	}
 
-	cout << "Closest sum to " << query << " is " << smallest << "." << endl;
+	cout << "Closest sum to " << query << " is " << best_sum << "." << endl;
 }
