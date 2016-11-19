@@ -1,4 +1,4 @@
-//IN PROGRESS
+//DONE
 #include <iostream>
 #include <limits>
 #include <cstdlib>
@@ -32,31 +32,36 @@ void solve(int budget)
 {
 	int first;
 	int second;
-	int smallest_diff = numeric_limits<int>::max();
-
-	int answer1 = 0;
+	int answer1 = numeric_limits<int>::max();
 	int answer2 = 0;
 
 	for(int i = 0; i < numBooks; i++)
 	{
 		first = books[i];
-		for(int k = i + 1; i < numBooks; i++)
+		for(int k = i + 1; k < numBooks; k++)
 		{
 			second = books[k];
 			int temp = first + second;
 
-			if(abs(budget - temp) <= smallest_diff &&
-				temp == budget)
-			// if(temp == budget)
+			if(temp == budget)
 			{
-				smallest_diff = abs(budget - temp);
-				answer1 = first;
-				answer2 = second;
+				if(abs(first - second) < abs(answer1 - answer2))
+				{
+					answer1 = first;
+					answer2 = second;
+				}
 			}
 
 		}
 	}
 
+	//to make sure the first number is smaller than the second.
+	if(answer1 > answer2)
+	{
+		int temp = answer2;
+		answer2 = answer1;
+		answer1 = temp;
+	}
 	cout << "Peter should buy books whose prices are " << answer1 << " and " << answer2 << "." << endl << endl;
 	
 }
