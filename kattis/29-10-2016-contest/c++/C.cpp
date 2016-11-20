@@ -31,7 +31,8 @@ int main()
             answer += list[i] * (i + 1);
 
         }
-        cout << std::setprecision(5);
+        cout << std::setprecision(4);
+        cout << std::fixed;
         cout << answer << endl;
     }
     return 0;
