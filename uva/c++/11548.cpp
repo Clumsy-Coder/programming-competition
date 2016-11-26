@@ -1,7 +1,8 @@
-//IN PROGRESS
+//DONE
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -9,14 +10,15 @@ int words = 0;
 int cases = 0;
 string wordList [72];
 
-void solve(string firstWord, string secondWord);
+int solve(string firstWord, string secondWord);
 
 int main()
 {
 	cin >> cases;
-
+	
 	for(int i = 0; i < cases; i++)
 	{
+
 		cin >> words;
 		for(int j = 0; j < words; j++)
 		{
@@ -24,29 +26,48 @@ int main()
 
 		}
 
-		for(int j = 0; j < words; j += 2)
+		int maxAnswer = 0;
+		for(int j = 0; j < words; j++)
 		{
-			solve(wordList[j], wordList[j + 1]);
+			for(int k = 0; k < words; k++)
+			{
+				if (j != k)
+					maxAnswer = max(solve(wordList[j], wordList[k]), maxAnswer);
+			}
 		}
+
+		cout << maxAnswer << endl;
 
 	}
 
 	return 0;
 }
 
-void solve(string firstWord, string secondWord)
+int solve(string firstWord, string secondWord)
 {
 	long long answer = 0;
+	string temp = secondWord;
 	
-	for(int j = 0; j < firstWord.size() ; j++)
+	for(int i = 0; i < firstWord.size(); i++)
 	{
-		if(firstWord[j] == secondWord[j])
+		long long count = 0;
+		// int shift = 0;
+		
+		for(int j = 0; j < temp.size(); j++)
 		{
-			answer++;
+			if(j < firstWord.size() && firstWord[j] == temp[j])
+			{
+				count++;
+				
+			}
+
 		}
 
+		answer = max(answer, count);
+		temp.insert(0, "0");
+	
 	}
 
-	cout << answer << endl;
+	return answer;
 
 }
