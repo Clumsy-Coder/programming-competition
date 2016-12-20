@@ -7,39 +7,36 @@ using namespace std;
 
 int main()
 {
+	std::ios::sync_with_stdio(false);
 	int cases;
 	cin >> cases;
+	cin.ignore();
 	while(cases--)
 	{
-		map <char, double> charPair;
+		map <int, long> charPair;
 		int pairs;
 		cin >> pairs;
 		while(pairs--)
 		{
 			char character;
-			cin >> character >> charPair[character];
+			long value;
+			cin >> character >> value;
+			charPair[(int)character] = value;
 		}
 
 		long long strLines;
 		cin >> strLines;
-		cin.ignore();//ignore empty line
+		cin.ignore();
 
-		long answer = 0;
+		long long answer = 0;
 		for(long long i = 0; i < strLines; i++)
 		{
-			string curLine;
-			getline(cin, curLine);
-
-			long long size = curLine.size();
-			for(long long j = 0; j < size; j++)
+			char curChar;
+			while((curChar = cin.get()) != '\n')
 			{
-				if(curLine[j] == ' ' || curLine[j] == '\n')continue;
-
-				answer += charPair[curLine[j]];
+				answer += charPair[(int)curChar];
 			}
 		}
-		cout << answer / 100 << ".";
-		cout << std::setfill('0') << std::setw(2) << (answer % 100) << "$" << endl;
+		printf("%.2lf$\n", answer / 100.0);
 	}
-	cout << endl;
 }
