@@ -1,4 +1,4 @@
-//IN PROGRESS
+//DONE
 #include <iostream>
 
 using namespace std;
@@ -26,7 +26,6 @@ int main()
             if(d != first - second)
             {
                 mergeable = false;
-                break;
             }
         }
 
