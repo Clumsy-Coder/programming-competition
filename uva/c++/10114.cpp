@@ -1,24 +1,49 @@
-//IN PROGRESS!!
+//DONE
 #include <iostream>
 
-using std::cin;
-using std::cout;
-using std::endl;
+using namespace std;
 
-int main(){
+int main()
+{
+	int dur;
+	double downPay;
+	double loan;
+	int numDep;
+	double deps[101];
 
-	int unsigned 	duration;
-	int unsigned 	depRecords;
-	double 			downPay;
-	double 			loanAmount;
+	while(cin >> dur >> downPay >> loan >> numDep &&
+	      (dur > 0))
+	{
+		while(numDep--)
+		{
+			int month;
+			double curDep;
+			cin >> month >> curDep;
+			for(int i = month; i < 101; i++)
+			{
+				deps[i] = curDep;
+			}
 
+		}
 
+		int totalMonths = 0;
+		double curLoan = loan;
+		double monthlyPay = loan / dur;
+		double curPaid = (loan + downPay) * (1 - deps[0]);
 
-	cin >> duration >> downPay >> loanAmount >> depRecords;
+		while(curPaid < curLoan)
+		{
+			totalMonths++;
+			curLoan -= monthlyPay;
+			curPaid = curPaid * (1 - deps[totalMonths]);
 
-	cout << duration << downPay <<  loanAmount << depRecords << endl;
+		}
 
+		(totalMonths != 1)?
+			cout << totalMonths << " months" << endl:
+			cout << totalMonths << " month" << endl;
 
+	}
 
 	return 0;
 }
