@@ -1,161 +1,45 @@
 //IN PROGRESS
 #include <iostream>
-#include <string>
-#include <vector>
+#include <map>
 #include <iomanip>
 
-using std::cout;
-using std::cin;
-using std::endl;
-using std::string;
-using std::vector;
-
-struct charType
-{
-	char character;
-	double value;
-
-};
-
-long long dollar = 0;
-int cent = 0;
-
-vector<charType> charList;
-vector<string> artical;
-
-void printCharList();
-void printArticleList();
-
-
-int findChar(char charValue)
-{
-	// cout << charValue << endl;
-	int value = 0;
-
-	for (unsigned int i = 0; i < charList.size(); i++)
-	{
-		if(charList[i].character == charValue)
-		{
-			value = charList[i].value;
-			break;
-		}
-	}
-
-	return value;
-}
-
-void calculate()
-{
-	for (unsigned int i = 0; i < artical.size(); i++)
-	{
-		string tempString = artical[i];
-		//cout << tempString << endl;
-		
-		for (unsigned int k = 0; k < tempString.size(); k++)
-		{
-			int tempValue = findChar(tempString[k]);
-			//cout << tempValue << " ";
-			if(tempValue > 0)
-			{
-				if(cent + tempValue >= 100)
-				{
-					//cout << "." << endl;
-					dollar++;
-					cent = (cent + tempValue) % 100;
-				}
-
-				else
-				{
-					cent += tempValue;
-				}
-
-
-			}
-			
-		}
-		
-	}
-
-}
+using namespace std;
 
 int main()
 {
-	int cases = 0;
+	int cases;
 	cin >> cases;
-
-	for(int i = 0; i < cases; i++)
+	while(cases--)
 	{
-		int paidChar = 0;
-		cin >> paidChar;
-
-		for (int k = 0; k < paidChar; k++)
+		map <char, double> charPair;
+		int pairs;
+		cin >> pairs;
+		while(pairs--)
 		{
-			char tempChar;
-			int tempInt;
-			cin >> tempChar >> tempInt;
-
-			charList.push_back(charType());
-			charList[charList.size() - 1].character = tempChar;
-			charList[charList.size() - 1].value = tempInt;
+			char character;
+			cin >> character >> charPair[character];
 		}
 
-		//printCharList();
+		long long strLines;
+		cin >> strLines;
+		cin.ignore();//ignore empty line
 
-		int articalNum = 0;
-		cin >> articalNum;
-
-		// cout <<endl << "artical NUM: " << articalNum << endl;
-		string tempString;
-		for(int k = 0; k <= articalNum; k++)
+		long answer = 0;
+		for(long long i = 0; i < strLines; i++)
 		{
-			// cout << "k: " << k << endl;
-			
-			getline(cin, tempString);
-			// cout << "tempString: " << tempString << endl;
-			artical.push_back(tempString);
+			string curLine;
+			getline(cin, curLine);
 
+			long long size = curLine.size();
+			for(long long j = 0; j < size; j++)
+			{
+				if(curLine[j] == ' ' || curLine[j] == '\n')continue;
+
+				answer += charPair[curLine[j]];
+			}
 		}
-
-		//for some reason the first element is empty, remove it.
-		artical.erase(artical.begin());
-		//printArticleList();
-
-		
-		calculate();
-		cout << dollar << ".";
-		// cent = 10;
-		if(cent < 10)
-		{
-			cout << std::setfill('0') << std::setw(2) << cent << "$" << endl;
-		}
-
-		else
-		{
-			cout << cent << "$" << endl;
-		}
-		
-
-	}	
-
-	return 0;
-}
-
-void printCharList()
-{
-	cout << "CharList vector size: " << charList.size() << endl;
-	for (unsigned int i = 0; i < charList.size(); ++i)
-	{
-		cout << "[" << i << "]: " << charList[i].character << " " << charList[i].value << endl;
+		cout << answer / 100 << ".";
+		cout << std::setfill('0') << std::setw(2) << (answer % 100) << "$" << endl;
 	}
-
-}
-
-void printArticleList()
-{
-	cout << "Article vector size: " << artical.size() << endl;
-	for (unsigned int i = 0; i < artical.size(); i++)
-	{
-		cout << "[" << i << "]: " << artical[i] << endl;
-	}
-
+	cout << endl;
 }
