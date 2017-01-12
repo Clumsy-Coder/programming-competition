@@ -1,21 +1,30 @@
 //INPROGRESS
-#include <iostream>
-#include <vector>
+#include <iostream>		//cin, cout, getline
+#include <sstream>		//istringstream
+// #include <algorithm>
+#include <vector>		//excuses, answer
+#include <set>			//keywords
+// #include <cctype>
 
 using namespace std;
 
+bool check(string excuseWord);
+
+set<string> keywords;
 int main()
 {
 	int k, e;
-
+	int cases = 1;
 	while(cin >> k >> e)
 	{
-		vector<string> keywords;
+		if(cases > 1){cout << endl;} //adding a new line for the next case
+		vector<string> answer;
+		keywords.clear();
 		for(int i = 0; i < k; i++)
 		{
 			string curKeyword;
 			cin >> curKeyword;
-			keywords.push_back(curKeyword);
+			keywords.insert(curKeyword);
 		}
 
 		vector<string> excuses;
@@ -23,23 +32,65 @@ int main()
 		{
 			string curExcuse;
 			getline(cin, curExcuse);
+			// transform(curExcuse.begin(), curExcuse.end(), curExcuse.begin(), ::tolower);
 			excuses.push_back(curExcuse);
 		}
 
-		// excuses.pop_back();
-
-		for (int i = 0; i < keywords.size(); ++i)
-		{
-			cout << keywords[i] << " ";
-		}
-
-		cout << endl;
-
+		int maxOccurrence = -1;
 		for (int i = 0; i < excuses.size(); ++i)
 		{
-			cout << excuses[i] << endl;
+			istringstream iss(excuses[i]);
+			string temp;
+			int counter = 0;
+			while(iss >> temp)
+			{
+				transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
+				if(check(temp))
+				{
+					counter++;
+				}
+
+			}
+
+			if(counter > maxOccurrence)
+			{
+				answer.clear();
+				maxOccurrence = counter;
+				answer.push_back(excuses[i]);
+			}
+			else if(counter == maxOccurrence)
+			{
+				answer.push_back(excuses[i]);
+			}
+
 		}
 
-		cout << "-------------------" << endl;
+		cout << "Excuse Set #" << cases++ << endl;
+		for(int i = 0; i < answer.size(); i++)
+		{
+			cout << answer[i] << endl;
+		}
+	}
+}
+
+bool check(string excuseWord)
+{
+	string tempstr = "";
+	for(int i = 0; i < excuseWord.size(); i++)
+	{
+		if(isalpha(excuseWord[i]))
+		{
+			tempstr += excuseWord[i];
+		}
+	}
+
+	if(keywords.find(tempstr) != keywords.end())
+	{
+		return true;
+	}
+
+	else
+	{
+		return false;
 	}
 }
