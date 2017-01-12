@@ -1,10 +1,40 @@
 //INPROGRESS
+
+/*
+	read keywords
+	add the keyword into a set (for making it easier to search)
+
+	read the excuse
+	add the excuse into a vector
+
+	iterate through the excuses
+		use istringstream to get the word from the excuse
+		lower case the word
+		call check function
+			iterate through the word
+				check if it's an alphabet character by character
+					concatenate to a tempprary string of the character being checked
+			search the excuse word in keywords set
+				if found return true
+				else return false;
+
+		if check function returns true
+			increment a counter
+		if current counter is higher than maxCounter
+			clear the answer vector
+			set maxCounter to counter
+			add current excuse sentence to answer vector
+		else if current counter is equal to maxCounter
+			add current excuse to answer vector
+
+	print the answer
+		iterate through the answer vector answer and print it.
+*/
+
 #include <iostream>		//cin, cout, getline
 #include <sstream>		//istringstream
-// #include <algorithm>
 #include <vector>		//excuses, answer
 #include <set>			//keywords
-// #include <cctype>
 
 using namespace std;
 
