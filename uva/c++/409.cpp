@@ -35,10 +35,13 @@
 #include <sstream>		//istringstream
 #include <vector>		//excuses, answer
 #include <set>			//keywords
+#include <algorithm>	//transform
+#include <string>
 
 using namespace std;
 
 bool check(string excuseWord);
+string removeNonAlpha(string excuse);
 
 set<string> keywords;
 int main()
@@ -47,7 +50,6 @@ int main()
 	int cases = 1;
 	while(cin >> k >> e)
 	{
-		if(cases > 1){cout << endl;} //adding a new line for the next case
 		vector<string> answer;
 		keywords.clear();
 		for(int i = 0; i < k; i++)
@@ -57,25 +59,26 @@ int main()
 			keywords.insert(curKeyword);
 		}
 
+		cin.ignore();
 		vector<string> excuses;
-		for(int i = 0; i < e + 1; i++)
+		for(unsigned int i = 0; i < e; i++)
 		{
 			string curExcuse;
 			getline(cin, curExcuse);
-			// transform(curExcuse.begin(), curExcuse.end(), curExcuse.begin(), ::tolower);
 			excuses.push_back(curExcuse);
 		}
 
 		int maxOccurrence = -1;
-		for (int i = 0; i < excuses.size(); ++i)
+		for (unsigned int i = 0; i < excuses.size(); ++i)
 		{
-			istringstream iss(excuses[i]);
+			string curExcuse = removeNonAlpha(excuses[i]);
+			istringstream iss(curExcuse);
 			string temp;
 			int counter = 0;
 			while(iss >> temp)
 			{
 				transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
-				if(check(temp))
+				if(keywords.find(temp) != keywords.end())
 				{
 					counter++;
 				}
@@ -96,31 +99,29 @@ int main()
 		}
 
 		cout << "Excuse Set #" << cases++ << endl;
-		for(int i = 0; i < answer.size(); i++)
+		for(unsigned int i = 0; i < answer.size(); i++)
 		{
 			cout << answer[i] << endl;
 		}
+
+		cout << endl;
 	}
 }
 
-bool check(string excuseWord)
+string removeNonAlpha(string excuse)
 {
-	string tempstr = "";
-	for(int i = 0; i < excuseWord.size(); i++)
+	string newStr = "";
+	for (unsigned int i = 0; i < excuse.size(); ++i)
 	{
-		if(isalpha(excuseWord[i]))
+		if(!isalpha(excuse[i]))
 		{
-			tempstr += excuseWord[i];
+			newStr += " ";
+		}
+		else
+		{
+			newStr += excuse[i];
 		}
 	}
 
-	if(keywords.find(tempstr) != keywords.end())
-	{
-		return true;
-	}
-
-	else
-	{
-		return false;
-	}
+	return newStr;
 }
