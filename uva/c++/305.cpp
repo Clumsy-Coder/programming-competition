@@ -20,26 +20,45 @@ int main()
 		{
 			k.push_back('b');
 		}
-		long long count = 1;
+		long long count = 0;
+		long long eraseIndex = 0;
+		long long prevKill = 0;
 		vector<char> copy = k;
+
+		// cout << "value: " << value
+		// 	 << " g: " << check(copy, 'g')
+		// 	 << " b: " << check(copy, 'b') << endl;
+
 		while(true)
 		{
-			long long eraseIndex = count % copy.size();
-			copy.erase(copy.begin() + eraseIndex + 1);
-			if(check(copy, 'g') < value)
+			// for(char cur : copy){cout << cur << " ";}
+			// cout << "****" << endl;
+			eraseIndex = (count + prevKill) % copy.size();
+			prevKill = eraseIndex;
+			// cout << " ---eraseIndex: " << eraseIndex;
+			// cout << " ---count: " << count << endl;
+
+			copy.erase(copy.begin() + eraseIndex);
+			if(check(copy, 'g') != value)
 			{
 				count++;
 				copy = k;
+				prevKill = 0;
 				continue;
 			}
-			cout << count << endl;
-			if(check(copy, 'g') == value && check(copy, 'b') == 0)
+			// cout << count << endl;
+			// cout << "value: " << value
+			// 	 << " g: " << check(copy, 'g')
+			// 	 << " b: " << check(copy, 'b') << endl;
+			if(check(copy, 'g') == value &&
+			   check(copy, 'b') == 0)
 			{
 				break;
 			}
 		}
 
-		cout << count << endl;
+		cout << count + 1 << endl;
+		// cout << "/////" << endl;
 	}
 }
 
