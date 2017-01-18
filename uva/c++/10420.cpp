@@ -1,3 +1,4 @@
+//DONE
 #include <iostream>
 #include <string>
 #include <map>
@@ -16,7 +17,7 @@ int main()
 		string ignore;
 		getline(cin, ignore);
 		if(countryMap[country])
-		{ 
+		{
 			countryMap[country]++;
 		}
 		else
