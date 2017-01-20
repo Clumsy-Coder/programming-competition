@@ -26,13 +26,13 @@ struct Date {
   {
     return yr >= BASE_YEAR && mon >= 1 && mon <= 12 &&
       day > 0 && day <= daysIn(mon, yr);
-  }    
+  }
 
   bool isValid() const
   {
     return validDate(yyyy, mm, dd);
   }
-  
+
   // Constructor to create a specific date.  If the date is invalid,
   // the behaviour is undefined
   Date(int yr = 1970, int mon = 1, int day = 1)
@@ -41,7 +41,7 @@ struct Date {
     mm = mon;
     dd = day;
   }
-  
+
   // Returns the day of the week for this
   dayName dayOfWeek() const
   {
@@ -50,7 +50,7 @@ struct Date {
     int m = mm + 12 * a - 2;
     return (dayName)((dd + y + y/4 - y/100 + y/400 + 31 * m / 12) % 7);
   }
-  
+
   // comparison operators
   bool operator==(const Date &d) const
   {
@@ -89,7 +89,7 @@ struct Date {
       return 31;
     }
   }
-  
+
   // increment by day, month, or year
   //
   // Use negative argument to decrement
@@ -112,13 +112,13 @@ struct Date {
 	yyyy++;
       }
     }
-    
+
     while (dd < 1) {
       if (--mm < 1) {
 	mm = 12;
 	yyyy--;
       }
-      dd += daysIn(mm,yyyy); 
+      dd += daysIn(mm,yyyy);
     }
   }
 
@@ -130,12 +130,12 @@ struct Date {
       mm -= 12;
       yyyy++;
     }
-    
+
     while (mm < 1)  {
       mm += 12;
       yyyy--;
     }
-    
+
     if (dd > daysIn(mm,yyyy)) {
       dd = daysIn(mm,yyyy);
     }
@@ -201,6 +201,25 @@ void solve(Date date);
 
 long long curCase = 1;
 
+// Date(int yr = 1970, int mon = 1, int day = 1)
+Date signsRange [] = {
+                        Date(1970, 1, 21),
+                        Date(1970, 2, 20),
+                        Date(1970, 3, 21),
+                        Date(1970, 4, 21),
+                        Date(1970, 5, 22),
+                        Date(1970, 6, 22),
+                        Date(1970, 7, 23),
+                        Date(1970, 8, 22),
+                        Date(1970, 9, 24),
+                        Date(1970, 10, 24),
+                        Date(1970, 11, 23),
+                        Date(1970, 12, 23),
+                        Date(1970, 1, 1)        //dummy entry
+                     };
+string signs [] = {"aquarius","pisces","aries","taurus","gemini","cancer",
+                   "leo","virgo","libra","scorpio","sagittarius","capricorn"};
+
 int main()
 {
   int cases;
@@ -214,30 +233,51 @@ int main()
     date.dd = stoi(curDate.substr(2, 2));
     date.yyyy = stoi(curDate.substr(4, 4));
     solve(date);
- 
+
   }
 }
 
 void solve(Date date)
 {
-  for(int i = 0; i < 7 * 40; i++)
-  {
+    for(int i = 0; i < 7 * 40; i++)
+    {
     date.addDay();
-  }
+    }
 
-  cout << curCase++ << " " << date << " ";
+    cout << curCase++ << " " << date << " ";
 
-  if ((date.dd >= 23 && date.mm == 12) || (date.dd <= 20 && date.mm == 1)) { cout << "capricorn" << endl; }
-  if ((date.dd >= 21 && date.mm == 1) || (date.dd <= 19 && date.mm == 2)) { cout << "aquarius" << endl; }
-  if ((date.dd >= 20 && date.mm == 2) || (date.dd <= 20 && date.mm == 3)) { cout << "pisces" << endl; }
-  if ((date.dd >= 21 && date.mm == 3) || (date.dd <= 20 && date.mm == 4)) { cout << "aries" << endl; }
-  if ((date.dd >= 21 && date.mm == 4) || (date.dd <= 21 && date.mm == 5)) { cout << "taurus" << endl; }
-  if ((date.dd >= 22 && date.mm == 5) || (date.dd <= 21 && date.mm == 6)) { cout << "gemini" << endl; }
-  if ((date.dd >= 22 && date.mm == 6) || (date.dd <= 22 && date.mm == 7)) { cout << "cancer" << endl; }
-  if ((date.dd >= 23 && date.mm == 7) || (date.dd <= 21 && date.mm == 8)) { cout << "leo" << endl; }
-  if ((date.dd >= 22 && date.mm == 8) || (date.dd <= 23 && date.mm == 9)) { cout << "virgo" << endl; }
-  if ((date.dd >= 24 && date.mm == 9) || (date.dd <= 23 && date.mm == 10)) { cout << "libra" << endl; }
-  if ((date.dd >= 24 && date.mm == 10) || (date.dd <= 22 && date.mm == 11)) { cout << "scorpio" << endl; }
-  if ((date.dd >= 23 && date.mm == 11) || (date.dd <= 22 && date.mm == 12)) { cout << "sagittarius" << endl; }
+    for(int i = 0; i < 12; i++)
+    {
+        if((date.dd >= signsRange[(i + 1)%12].dd && date.mm == signsRange[i%12].mm) ||
+           (date.dd <= signsRange[i % 12].dd && date.mm == signsRange[(i + 1)%12].mm))
+           {
+            //    if(date.dd >= signsRange[(i + 1)%12].dd && date.mm == signsRange[(i + 1)%12].mm)
+            // if (date.dd <= signsRange[i%12].dd && date.mm == signsRange[(i + 1)%12].mm)
+            if(date.dd < signsRange[i%12].dd)
+               {
+                   cout << signs[(i + 1)%12] << endl;
+                // cout << signs[i%12] << endl;
+               }
+               else
+               {
+                   cout << signs[i%12] << endl;
+                // cout << signs[(i + 1)%12] << endl;
+               }
+               break;
+           }
+    }
+
+    // if ((date.dd >= 23 && date.mm == 12) || (date.dd <= 20 && date.mm == 1)) { cout << "capricorn" << endl; }
+    // if ((date.dd >= 21 && date.mm == 1) || (date.dd <= 19 && date.mm == 2)) { cout << "aquarius" << endl; }
+    // if ((date.dd >= 20 && date.mm == 2) || (date.dd <= 20 && date.mm == 3)) { cout << "pisces" << endl; }
+    // if ((date.dd >= 21 && date.mm == 3) || (date.dd <= 20 && date.mm == 4)) { cout << "aries" << endl; }
+    // if ((date.dd >= 21 && date.mm == 4) || (date.dd <= 21 && date.mm == 5)) { cout << "taurus" << endl; }
+    // if ((date.dd >= 22 && date.mm == 5) || (date.dd <= 21 && date.mm == 6)) { cout << "gemini" << endl; }
+    // if ((date.dd >= 22 && date.mm == 6) || (date.dd <= 22 && date.mm == 7)) { cout << "cancer" << endl; }
+    // if ((date.dd >= 23 && date.mm == 7) || (date.dd <= 21 && date.mm == 8)) { cout << "leo" << endl; }
+    // if ((date.dd >= 22 && date.mm == 8) || (date.dd <= 23 && date.mm == 9)) { cout << "virgo" << endl; }
+    // if ((date.dd >= 24 && date.mm == 9) || (date.dd <= 23 && date.mm == 10)) { cout << "libra" << endl; }
+    // if ((date.dd >= 24 && date.mm == 10) || (date.dd <= 22 && date.mm == 11)) { cout << "scorpio" << endl; }
+    // if ((date.dd >= 23 && date.mm == 11) || (date.dd <= 22 && date.mm == 12)) { cout << "sagittarius" << endl; }
 
 }
