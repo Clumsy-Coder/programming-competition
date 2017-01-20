@@ -199,18 +199,7 @@ ostream& operator<< (ostream &os, const Date &d) {
 
 void solve(Date date);
 
-string [] signs = {"Aquarius", 
-                   "Pisces", 
-                   "Aries", 
-                   "Taurus", 
-                   "Gemini", 
-                   "Cancer", 
-                   "Leo", 
-                   "Virgo", 
-                   "Libra", 
-                   "Scorpio", 
-                   "Sagittarius", 
-                   "Capricorn"};
+long long curCase = 1;
 
 int main()
 {
@@ -224,8 +213,6 @@ int main()
     date.mm = stoi(curDate.substr(0, 2));
     date.dd = stoi(curDate.substr(2, 2));
     date.yyyy = stoi(curDate.substr(4, 4));
-
-    cout << "date: " << date << "\t";
     solve(date);
  
   }
@@ -238,6 +225,19 @@ void solve(Date date)
     date.addDay();
   }
 
-  cout << date << " ";
-  
+  cout << curCase++ << " " << date << " ";
+
+  if ((date.dd >= 23 && date.mm == 12) || (date.dd <= 20 && date.mm == 1)) { cout << "capricorn" << endl; }
+  if ((date.dd >= 21 && date.mm == 1) || (date.dd <= 19 && date.mm == 2)) { cout << "aquarius" << endl; }
+  if ((date.dd >= 20 && date.mm == 2) || (date.dd <= 20 && date.mm == 3)) { cout << "pisces" << endl; }
+  if ((date.dd >= 21 && date.mm == 3) || (date.dd <= 20 && date.mm == 4)) { cout << "aries" << endl; }
+  if ((date.dd >= 21 && date.mm == 4) || (date.dd <= 21 && date.mm == 5)) { cout << "taurus" << endl; }
+  if ((date.dd >= 22 && date.mm == 5) || (date.dd <= 21 && date.mm == 6)) { cout << "gemini" << endl; }
+  if ((date.dd >= 22 && date.mm == 6) || (date.dd <= 22 && date.mm == 7)) { cout << "cancer" << endl; }
+  if ((date.dd >= 23 && date.mm == 7) || (date.dd <= 21 && date.mm == 8)) { cout << "leo" << endl; }
+  if ((date.dd >= 22 && date.mm == 8) || (date.dd <= 23 && date.mm == 9)) { cout << "virgo" << endl; }
+  if ((date.dd >= 24 && date.mm == 9) || (date.dd <= 23 && date.mm == 10)) { cout << "libra" << endl; }
+  if ((date.dd >= 24 && date.mm == 10) || (date.dd <= 22 && date.mm == 11)) { cout << "scorpio" << endl; }
+  if ((date.dd >= 23 && date.mm == 11) || (date.dd <= 22 && date.mm == 12)) { cout << "sagittarius" << endl; }
+
 }
