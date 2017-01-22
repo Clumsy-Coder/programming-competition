@@ -1,3 +1,4 @@
+//DONE
 #include <iostream>
 #include <string>
 #include <utility>
@@ -201,83 +202,56 @@ void solve(Date date);
 
 long long curCase = 1;
 
-// Date(int yr = 1970, int mon = 1, int day = 1)
-Date signsRange [] = {
-                        Date(1970, 1, 21),
-                        Date(1970, 2, 20),
-                        Date(1970, 3, 21),
-                        Date(1970, 4, 21),
-                        Date(1970, 5, 22),
-                        Date(1970, 6, 22),
-                        Date(1970, 7, 23),
-                        Date(1970, 8, 22),
-                        Date(1970, 9, 24),
-                        Date(1970, 10, 24),
-                        Date(1970, 11, 23),
-                        Date(1970, 12, 23),
-                        Date(1970, 1, 1)        //dummy entry
+Date signsRange [13][2] = {
+                        {Date(1970, 1, 21), Date(1970, 2, 19)},     // aquarius
+                        {Date(1970, 2, 20), Date(1970, 3, 20)},     // pisces
+                        {Date(1970, 3, 21), Date(1970, 4, 20)},     // aries
+                        {Date(1970, 4, 21), Date(1970, 5, 21)},     // taurus
+                        {Date(1970, 5, 22), Date(1970, 6, 21)},     // gemini
+                        {Date(1970, 6, 22), Date(1970, 7, 22)},     // cancer
+                        {Date(1970, 7, 23), Date(1970, 8, 21)},     // leo
+                        {Date(1970, 8, 22), Date(1970, 9, 23)},     // virgo
+                        {Date(1970, 9, 24), Date(1970, 10, 23)},    // libra
+                        {Date(1970, 10, 24), Date(1970, 11, 22)},   // scorpio
+                        {Date(1970, 11, 23), Date(1970, 12, 22)},   // sagittarius
+                        {Date(1970, 12, 23), Date(1970, 1, 20)},    // capricorn
+                        {Date(1970, 1, 1), Date(1970, 1, 1)}        //dummy entry
                      };
 string signs [] = {"aquarius","pisces","aries","taurus","gemini","cancer",
                    "leo","virgo","libra","scorpio","sagittarius","capricorn"};
 
 int main()
 {
-  int cases;
-  cin >> cases;
-  while(cases--)
-  {
-    string curDate;
-    cin >> curDate;
-    Date date;
-    date.mm = stoi(curDate.substr(0, 2));
-    date.dd = stoi(curDate.substr(2, 2));
-    date.yyyy = stoi(curDate.substr(4, 4));
-    solve(date);
-
-  }
+    int cases;
+    cin >> cases;
+    while(cases--)
+    {
+        string curDate;
+        cin >> curDate;
+        Date date;
+        date.mm = stoi(curDate.substr(0, 2));
+        date.dd = stoi(curDate.substr(2, 2));
+        date.yyyy = stoi(curDate.substr(4, 4));
+        solve(date);
+    }
 }
 
 void solve(Date date)
 {
     for(int i = 0; i < 7 * 40; i++)
     {
-    date.addDay();
+        date.addDay();
     }
-
     cout << curCase++ << " " << date << " ";
-
     for(int i = 0; i < 12; i++)
     {
-        if((date.dd >= signsRange[(i + 1)%12].dd && date.mm == signsRange[i%12].mm) ||
-           (date.dd <= signsRange[i % 12].dd && date.mm == signsRange[(i + 1)%12].mm))
-           {
-            //    if(date.dd >= signsRange[(i + 1)%12].dd && date.mm == signsRange[(i + 1)%12].mm)
-            // if (date.dd <= signsRange[i%12].dd && date.mm == signsRange[(i + 1)%12].mm)
-            if(date.dd < signsRange[i%12].dd)
-               {
-                   cout << signs[(i + 1)%12] << endl;
-                // cout << signs[i%12] << endl;
-               }
-               else
-               {
-                   cout << signs[i%12] << endl;
-                // cout << signs[(i + 1)%12] << endl;
-               }
-               break;
-           }
+        if(
+           (date.dd >= signsRange[i % 12][0].dd && date.mm == signsRange[i % 12][0].mm) ||
+           (date.dd <= signsRange[i % 12][1].dd && date.mm == signsRange[i % 12][1].mm)
+          )
+        {
+            cout << signs[i % 12] << endl;
+            break;
+        }
     }
-
-    // if ((date.dd >= 23 && date.mm == 12) || (date.dd <= 20 && date.mm == 1)) { cout << "capricorn" << endl; }
-    // if ((date.dd >= 21 && date.mm == 1) || (date.dd <= 19 && date.mm == 2)) { cout << "aquarius" << endl; }
-    // if ((date.dd >= 20 && date.mm == 2) || (date.dd <= 20 && date.mm == 3)) { cout << "pisces" << endl; }
-    // if ((date.dd >= 21 && date.mm == 3) || (date.dd <= 20 && date.mm == 4)) { cout << "aries" << endl; }
-    // if ((date.dd >= 21 && date.mm == 4) || (date.dd <= 21 && date.mm == 5)) { cout << "taurus" << endl; }
-    // if ((date.dd >= 22 && date.mm == 5) || (date.dd <= 21 && date.mm == 6)) { cout << "gemini" << endl; }
-    // if ((date.dd >= 22 && date.mm == 6) || (date.dd <= 22 && date.mm == 7)) { cout << "cancer" << endl; }
-    // if ((date.dd >= 23 && date.mm == 7) || (date.dd <= 21 && date.mm == 8)) { cout << "leo" << endl; }
-    // if ((date.dd >= 22 && date.mm == 8) || (date.dd <= 23 && date.mm == 9)) { cout << "virgo" << endl; }
-    // if ((date.dd >= 24 && date.mm == 9) || (date.dd <= 23 && date.mm == 10)) { cout << "libra" << endl; }
-    // if ((date.dd >= 24 && date.mm == 10) || (date.dd <= 22 && date.mm == 11)) { cout << "scorpio" << endl; }
-    // if ((date.dd >= 23 && date.mm == 11) || (date.dd <= 22 && date.mm == 12)) { cout << "sagittarius" << endl; }
-
 }
