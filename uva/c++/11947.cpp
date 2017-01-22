@@ -8,7 +8,8 @@
 using namespace std;
 using namespace std::rel_ops;
 
-/*Howard Cheng code for date */
+//----------------------------------------------------------------
+//Howard Cheng code for date
 
 struct Date {
 
@@ -197,12 +198,14 @@ ostream& operator<< (ostream &os, const Date &d) {
   os.fill(t);
   return os;
 }
-
+//END Howard Cheng's code
+//----------------------------------------------------------------
 void solve(Date date);
 
 long long curCase = 1;
 
-Date signsRange [13][2] = {
+//ignore the year, it's not being used.
+Date signsRange [12][2] = {
                         {Date(1970, 1, 21), Date(1970, 2, 19)},     // aquarius
                         {Date(1970, 2, 20), Date(1970, 3, 20)},     // pisces
                         {Date(1970, 3, 21), Date(1970, 4, 20)},     // aries
@@ -214,8 +217,7 @@ Date signsRange [13][2] = {
                         {Date(1970, 9, 24), Date(1970, 10, 23)},    // libra
                         {Date(1970, 10, 24), Date(1970, 11, 22)},   // scorpio
                         {Date(1970, 11, 23), Date(1970, 12, 22)},   // sagittarius
-                        {Date(1970, 12, 23), Date(1970, 1, 20)},    // capricorn
-                        {Date(1970, 1, 1), Date(1970, 1, 1)}        //dummy entry
+                        {Date(1970, 12, 23), Date(1970, 1, 20)}    // capricorn
                      };
 string signs [] = {"aquarius","pisces","aries","taurus","gemini","cancer",
                    "leo","virgo","libra","scorpio","sagittarius","capricorn"};
@@ -246,11 +248,11 @@ void solve(Date date)
     for(int i = 0; i < 12; i++)
     {
         if(
-           (date.dd >= signsRange[i % 12][0].dd && date.mm == signsRange[i % 12][0].mm) ||
-           (date.dd <= signsRange[i % 12][1].dd && date.mm == signsRange[i % 12][1].mm)
+           (date.dd >= signsRange[i][0].dd && date.mm == signsRange[i][0].mm) ||
+           (date.dd <= signsRange[i][1].dd && date.mm == signsRange[i][1].mm)
           )
         {
-            cout << signs[i % 12] << endl;
+            cout << signs[i] << endl;
             break;
         }
     }
