@@ -1,4 +1,23 @@
 //DONE
+
+/*
+	create an array size of 102 x 102 int
+	while there's input
+		for each row get the input character by charcter 
+			if the char is * then it's a mine
+				(note: insert at i + 1 and j + 1, to have a space around the array, to avoid bound checking errors)
+				insert the 'mine' (big value below 0) value at that col
+			else
+				insert a zero
+		iterate through the array. Row
+			iterate through the array. Col
+				if the current element is less than 0 (mine)
+					then increment by 1 around the mine.
+		display the array
+
+*/
+
+
 #include <iostream>
 #include <string>
 
