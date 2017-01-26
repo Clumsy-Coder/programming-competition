@@ -1,4 +1,18 @@
 //DONE
+
+/*
+    get number of cases
+    loop through the number of cases
+        get the date
+        sort out the info and use it Date struct (Howard Cheng's code)
+        for loop up to 7 * 40 starting at 0
+            add a Day using Date struct  (Howard's Code)
+        for loop up to 12 starting at 0   (checking sign)
+            if the computed Date is in the sign range
+                print the sign and break out of the loop.
+
+*/
+
 #include <iostream>
 #include <string>
 #include <utility>
