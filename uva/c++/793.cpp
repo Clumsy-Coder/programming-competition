@@ -1,4 +1,4 @@
-//INPROGRESS
+//DONE
 #include <iostream>
 #include <sstream>
 
@@ -80,8 +80,9 @@ int main()
     int cases;
     cin >> cases;
     cin.ignore();
-    while(cases--)
+    for(int i = 0; i < cases; i++)
     {
+        if(i > 0){cout << endl;}
         int numComp;
         cin >> numComp;
         // cout << numComp << endl;
@@ -120,5 +121,4 @@ void solve(int numComp)
         }
     }
     cout << connected << "," << notConnected << endl;
-    cout << endl;
 }
