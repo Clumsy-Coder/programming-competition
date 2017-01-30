@@ -1,60 +1,43 @@
 #include <iostream>
-#include <queue>
-#include <functional>
 #include <vector>
-#include <cstdlib>
+#include <set>
 
 using namespace std;
-
-void solve();
 
 int main()
 {
     int cases;
     cin >> cases;
-    for(int c = 0; c < cases; c++)
+    while(cases--)
     {
         cin.ignore();
-        solve();
-        cout << endl;
-
-    }
-}
-
-void solve()
-{
-    int numAdd, numGet;
-    cin >> numAdd >> numGet;
-    queue<int> addQueue;
-    priority_queue<int, vector<int>, greater<int> > getQueue;
-    for(int i = 0; i < numAdd; i++)
-    {
-        int temp;
-        cin >> temp;
-        addQueue.push(temp);
-    }
-
-    for(int i = 0; i < numGet; i++)
-    {
-        int temp;
-        cin >> temp;
-
-        if(getQueue.size() < temp)
+        int numAdd, numGet;
+        cin >> numAdd >> numGet;
+        vector<int> addQueue(numAdd);
+        multiset<int> getQueue;
+        for(int i = 0; i < numAdd; i++)
         {
-            int diff = abs((int)getQueue.size() - temp);
-            for(int i = 0; i < diff; i++)
+            cin >> addQueue[i];
+        }
+
+        for(int i = 0, curAdd = 0; i < numGet; i++)
+        {
+            int temp;
+            cin >> temp;
+
+            //add to getQueue if not enough elements
+            while(getQueue.size() < temp && getQueue.size() - temp)
             {
-                getQueue.push(addQueue.front());
-                addQueue.pop();
+                getQueue.insert(addQueue[curAdd++]);
             }
-        }
 
-        priority_queue<int, vector<int>, greater<int> > copyQ(getQueue);
-        for(int j = 0; j < i; j++)
-        {
-            copyQ.pop();
+            auto iterator = getQueue.begin();
+            for(int j = 0; j < i; j++)
+            {
+                iterator++;
+            }
+            cout << *iterator << endl;
         }
-        cout << copyQ.top() << endl;
-
+        if(cases){cout << endl;}
     }
 }
