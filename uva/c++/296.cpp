@@ -97,18 +97,10 @@ void checkCode(const int *genGuess)
 
 void printAnswer()
 {
-    int answer;
-    int numCandidate = 0;
-    for(int i = 0; i < totalPossibility; i++)
-    {
-        if(!notPossible[i]) //if the code is possible
-        {
-            numCandidate++;
-            answer = i;
-        }
-    }
+    int numCandidate = count(notPossible, notPossible + totalPossibility, false);
     if(numCandidate == 1)
     {
+        int answer = distance(notPossible, find(notPossible, notPossible + totalPossibility, false));
         cout << setw(4) << setfill('0') << answer << endl;
     }
     else if(numCandidate == 0)
