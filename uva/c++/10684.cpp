@@ -1,3 +1,4 @@
+//DONE
 /*
     Ad-hoc problem
     total: checks the current streak. If it's below 0, you start at 0
