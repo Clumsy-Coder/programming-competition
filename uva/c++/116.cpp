@@ -17,7 +17,7 @@ void print()
     {
         for(int curC = 0; curC < col; curC++)
         {
-            cout << dist[curR][curC] << "\t";
+            cout << matrix[curR][curC] << "\t";
         }
         cout << endl;
     }
@@ -41,24 +41,24 @@ int main()
         }
 
         generateDist();
-        // backtrack();
+        backtrack();
     }
 }
 
 void generateDist()
 {
-    for(int curC = col - 1; curC > 0; curC--)
+    for(int curC = col - 1; curC >= 0; curC--)
     {
         for(int curR = 0; curR < row; curR++)
         {
             //left
-            int left = matrix[curR][curC - 1];
+            int left = matrix[curR][curC + 1];
             //up. if curR = 0, then wrap around to the bottom. curR = row - 1
-            int up = (curR == 0) ? matrix[row - 1)][curC - 1] : matrix[(curR - 1) % row][curC - 1];
+            int up = (curR == 0) ? matrix[row - 1][curC + 1] : matrix[(curR - 1) % row][curC + 1];
             //down. if curR = row - 1, then wrap around to the top, curR = 0
-            int down = (curR == row - 1) ? matrix[0][curC - 1] : matrix[(curR + 1) % row][curC - 1];
+            int down = (curR == row - 1) ? matrix[0][curC + 1] : matrix[(curR + 1) % row][curC + 1];
 
-            dist[curR][curC - 1] = matrix[curR][curC] + min({left, up, down});
+            matrix[curR][curC] = matrix[curR][curC] + min({left, up, down});
         }
     }
 
@@ -67,17 +67,33 @@ void generateDist()
 
 void backtrack()
 {
-    // vector<int> path;
-    // for(int curC = 0; curC < col; curC++)
-    // {
-    //     int curMin = 9000;
-    //     for(int curR = 0; curR < row; curR++)
-    //     {
-    //         if(matrix[curR][curC] < curMin)
-    //         {
-    //             curMin = curR;
-    //             path.push_back(curR);
-    //         }
-    //     }
-    // }
+    vector<int> path;
+    int curLoc [] = {0, 0};
+    for(int curC = 0; curC < col; curC++)
+    {
+        int curMin = 9000;
+        for(int curR = 0; curR < row; curR++)
+        {
+            if(curC == 0)
+			{
+                if(matrix[curR][curC] < curMin)
+				{
+					curMin = curR;
+					curLoc[0] = curR;
+					curLoc[1] = curC;
+				}
+			}
+            else
+			{
+				
+			}
+        }
+        path.push_back(curMin);
+    }
+
+    for(unsigned int i = 0; i < path.size(); i++)
+    {
+        cout << path[i] + 1 << " ";
+    }
+    cout << endl;
 }
