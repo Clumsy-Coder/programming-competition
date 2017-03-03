@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <utility>
 
 using namespace std;
 
@@ -7,7 +8,6 @@ int row, col;
 const int MAX_ROW = 10;
 const int MAX_COL = 100;
 int matrix [MAX_ROW][MAX_COL];
-int dist [MAX_ROW][MAX_COL];
 void generateDist();
 void backtrack();
 
@@ -28,15 +28,12 @@ int main()
 {
     while(cin >> row >> col)
     {
+    	fill(&matrix[0][0], &matrix[row][0], 0);
         for(int curR = 0; curR < row; curR++)
         {
             for(int curC = 0; curC < col; curC++)
             {
                 cin >> matrix[curR][curC];
-                if(curC == col - 1)
-                {
-                    dist[curR][curC] = matrix[curR][curC];
-                }
             }
         }
 
@@ -54,46 +51,124 @@ void generateDist()
             //left
             int left = matrix[curR][curC + 1];
             //up. if curR = 0, then wrap around to the bottom. curR = row - 1
-            int up = (curR == 0) ? matrix[row - 1][curC + 1] : matrix[(curR - 1) % row][curC + 1];
+            int up = matrix[(curR + row - 1) % row][curC + 1];
             //down. if curR = row - 1, then wrap around to the top, curR = 0
-            int down = (curR == row - 1) ? matrix[0][curC + 1] : matrix[(curR + 1) % row][curC + 1];
+            int down = matrix[(curR + 1) % row][curC + 1];
 
             matrix[curR][curC] = matrix[curR][curC] + min({left, up, down});
         }
     }
 
-    print();
+    // print();
 }
 
 void backtrack()
 {
-    vector<int> path;
-    int curLoc [] = {0, 0};
-    for(int curC = 0; curC < col; curC++)
+    // vector<int> path;
+    // int curLoc [] = {0, 0};
+    int best = matrix[0][0], index = 0, distance;
+    for(int i = 0; i < row; i++)
     {
-        int curMin = 9000;
-        for(int curR = 0; curR < row; curR++)
-        {
-            if(curC == 0)
+    	if(matrix[i][0] < best)
 			{
-                if(matrix[curR][curC] < curMin)
-				{
-					curMin = curR;
-					curLoc[0] = curR;
-					curLoc[1] = curC;
-				}
+				index = i;
+				best = matrix[i][0];
 			}
-            else
-			{
-				
-			}
-        }
-        path.push_back(curMin);
     }
 
-    for(unsigned int i = 0; i < path.size(); i++)
+    distance = matrix[index][0];
+
+    for(int i = 0; i < col; i++)
     {
-        cout << path[i] + 1 << " ";
+    	cout << index + 1;
+    	if(i < col - 1)
+    	{
+    		cout << " ";
+    	}
+    	int right = matrix[index] [i + 1];
+		//up. if curR = 0, then wrap around to the bottom. curR = row - 1
+		int up = matrix[(index + row - 1) % row][i + 1];
+		//down. if curR = row - 1, then wrap around to the top, curR = 0
+		int down = matrix[(index + 1) % row][i + 1];
+
+		auto temp = min({pair<int, int>(right, index), 
+						 pair<int, int>(up, (index + row - 1) % row), 
+						 pair<int, int>(down, (index + 1) % row)});
+		index = temp.second;
+
     }
+
     cout << endl;
+    cout << distance << endl;
+
+    return;
+
+
+
+   //  for(int curC = 0; curC < col; )
+   //  {
+   //      for(int curR = 0; curR < row; curR++)
+   //      {
+   //          if(curC == 0)
+			// {
+   //              if(matrix[curR][curC] < matrix[curLoc[0]][curLoc[1]])
+			// 	{
+			// 		curLoc[0] = curR;
+			// 		curLoc[1] = curC;
+			// 	}
+			// }
+   //          else
+			// {
+			// 	int right = matrix[curLoc[0]] [curLoc[1] + 1];
+			// 	//up. if curR = 0, then wrap around to the bottom. curR = row - 1
+			// 	int up = matrix[(curLoc[0] + row - 1) % row][curLoc[1] + 1];
+			// 	//down. if curR = row - 1, then wrap around to the top, curR = 0
+			// 	int down = matrix[(curLoc[0] + 1) % row][curLoc[1] + 1];
+
+			// 	auto temp = min({pair<int, int>(right, curLoc[0]), 
+			// 					 pair<int, int>(up, (curLoc[0] + row - 1) % row), 
+			// 					 pair<int, int>(down, (curLoc[0] + 1) % row)});
+
+			// 	cout << "right: " << right << endl;
+			// 	cout << "up: " << up << endl;
+			// 	cout << "down: " << down << endl;
+			// 	cout << "temp: " << temp.first << endl;
+
+			// 	//temp.second == curLoc[0] used for tie breaker
+			// 	if(temp.first == right && temp.second == curLoc[0])
+			// 	{
+			// 		curLoc[1] = curLoc[1] + 1;
+			// 		cout << "right\n\n";
+			// 	}
+			// 	else if(temp.first == up)
+			// 	{
+			// 		curLoc[0] = (curLoc[0] + row - 1) % row;
+			// 		curLoc[1] = curLoc[1] + 1;
+			// 		cout << "up\n\n";
+			// 	}
+			// 	else if(temp.first == down)
+			// 	{
+			// 		curLoc[0] = (curLoc[0] + 1) % row;
+			// 		curLoc[1] = curLoc[1] + 1;
+			// 		cout << "down\n\n";
+			// 	}
+			// 	curC = curLoc[1];
+			// 	path.push_back(curLoc[0]);
+			// }
+
+			// if(curR == row - 1 && curC == 0)
+			// {
+			// 	path.push_back(curLoc[0]);
+			// 	curC = curLoc[1] + 1;
+			// }
+   //      }
+        
+   //  }
+
+   //  for(unsigned int i = 0; i < path.size(); i++)
+   //  {
+   //      cout << path[i] + 1 << " ";
+   //  }
+   //  cout << endl << matrix[path[0]][0] << endl;
+   //  // cout << "----------\n\n";
 }
