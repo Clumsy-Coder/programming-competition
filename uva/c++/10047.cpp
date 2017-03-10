@@ -4,15 +4,17 @@
 
 using namespace std;
 
-const int dirX [] = {-1, 0, 1, 0 };
-const int dirY [] = {0 , 1, 0, -1};
+const int dirY [] = {-1, 0, 1, 0 };
+const int dirX [] = {0 , 1, 0, -1};
 const int RIGHT = 1;
 const int LEFT = 3;
 bool status [30][30][5][5]; //[x][y][dir][colour]
-
-void readInput();
-
+char matrix [27][27];
+int cases = 1;
 int numRow, numCol;
+int solve();
+void readInput();
+void print();
 
 struct node
 {
@@ -40,7 +42,7 @@ struct node
 
     node moveForward()
     {
-        return node( x + dirX[dir], y + dirY[dir],  //x and y
+        return node( x + dirY[dir], y + dirX[dir],  //x and y
                      dir,                           //direction
                      (colour + 1) % 5,              //colour
                      time + 1);                     //time
@@ -48,30 +50,27 @@ struct node
 
     bool valid()
     {
-        return (x + dirX[dir] < numRow &&  x + dirX[dir] >= 0) && 
-               (y + dirY[dir] < numCol && y + dirY[dir] >= 0);
+        // return (x + dirX[dir] < numRow &&  x + dirX[dir] >= 0) && 
+        //        (y + dirY[dir] < numCol && y + dirY[dir] >= 0);
+        return ((x + dirY[dir] < 1) ||  (x + dirY[dir] > numRow) ||
+               (y + dirX[dir] < 1) || (y + dirX[dir] > numCol));
 
     }
 
 };
 
-
-char matrix [27][27];
-node start, finish;
-int cases = 1;
-
-void print();
-void solve();
-
+node start;
 int main()
 {
-    
     while(cin >> numRow >> numCol && (numRow && numCol))
     {
         if(cases > 1)cout << endl;
         readInput();
-        solve();
-        // cout << "Case #" << cases++ << endl;
+        // print();
+        int answer = solve();
+        cout << "Case #" << cases++ << endl;
+        (answer != 0) ? cout << "minimum time = " << answer << " sec\n" :
+                       cout << "destination not reachable\n";
     }
 }
 
@@ -79,69 +78,64 @@ void readInput()
 {
     memset(status, false, sizeof(status));
     memset(matrix, '#', sizeof(matrix));
-    for(int i = 1; i < numRow + 1; i++)
+    for(int i = 1; i <= numRow; i++)
     {
-        for(int j = 1; j < numCol + 1; j++)
+        for(int j = 1; j <= numCol; j++)
         {
             cin >> matrix[i][j];
             if(matrix[i][j] == 'S')
             {
-                start.x = i;
-                start.y = j;
-                start.colour = 0;
-            }
-            if(matrix[i][j] == 'T')
-            {
-                finish.x = i;
-                finish.y = j;
-                finish.colour = 0;
+                start = node(i, j, 0, 0, 0);
             }
         }
     }
 }
 
-void solve()
+int solve()
 {
     queue <node> bfs;
     bfs.push(start);
-    node answer;
 
     while(!bfs.empty())
     {
-        node parent = bfs.front(); bfs.pop();
-
+        node curNode = bfs.front(); bfs.pop();
         //check if the node is at the finish
-        if(parent.x == finish.x && parent.y == finish.y && parent.colour == finish.colour)
+        // if(curNode.x == finish.x && curNode.y == finish.y && curNode.colour == finish.colour)
+        if(matrix[curNode.x][curNode.y] == 'T' && curNode.colour == 0)
         {
-            answer = parent;
-            break;
+            return curNode.time;
         }
-        // //ignore if current grid location is #
-        // if(matrix[parent.x][parent.y] == '#') {continue;}
-        // //ignore if already visited
-        // if(status[parent.x][parent.y][parent.dir][parent.colour]) {continue;}
-        // //if it's in bounds
-        // if (!parent.valid()){continue;}
 
-        if( matrix[parent.x][parent.y] == '#' || 
-            status[parent.x][parent.y][parent.dir][parent.colour] ||
-            !parent.valid())
+        //ignore if current position is #, or
+        //already visited or
+        if( matrix[curNode.x][curNode.y] == '#' || 
+            status[curNode.x][curNode.y][curNode.dir][curNode.colour])
         {
-            continue;
+            continue; 
         }
 
         //mark current coordinate as visited
-        status[parent.x][parent.y][parent.dir][parent.colour] = true;
-        //turn right
-        bfs.push(parent.turn(RIGHT));
-        //turn left
-        bfs.push(parent.turn(LEFT));
-        //move foreward
-        bfs.push(parent.moveForward());
+        status[curNode.x][curNode.y][curNode.dir][curNode.colour] = true;
+
+        if(!curNode.valid())
+        {
+            bfs.push(curNode.moveForward());
+        }
+        bfs.push(curNode.turn(RIGHT));
+        bfs.push(curNode.turn(LEFT));
 
     }
+    return 0;
+}
 
-    cout << "Case #" << cases++ << endl;
-    (answer.time != 0) ? cout << "minimum time = " << answer.time << " sec\n" :
-                       cout << "destination not reachable\n";
+void print()
+{
+    for(int i = 0; i <= numRow + 1; i++)
+    {
+        for(int j = 0; j <= numCol + 1; j++)
+        {
+            cout << matrix[i][j];
+        }
+        cout << endl;
+    }
 }
