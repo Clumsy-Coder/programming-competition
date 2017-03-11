@@ -1,91 +1,99 @@
+//DONE
+/*
+    use bfs to find the best path to the finish.
+    there will only be two answers for each cases (either the path is found or not).
+        if the path is found
+            the answer must match row, col, and the colour to the finish in order to complete the search.
+    use a struct to define a node in the grid.
+        each node will have row, col, colour, dir, time defined by default.
+        you can either turn right or left or move foreward based on the current position and direction.
+    keep searching in the grid until the path is found or not.
+*/
+
 #include <iostream>
-#include <queue>
 #include <string.h>
+#include <queue>
 
 using namespace std;
 
-const int dirY [] = {-1, 0, 1, 0 };
-const int dirX [] = {0 , 1, 0, -1};
-const int RIGHT = 1;
-const int LEFT = 3;
-bool status [30][30][5][5]; //[x][y][dir][colour]
-char matrix [27][27];
-int cases = 1;
-int numRow, numCol;
-int solve();
-void readInput();
-void print();
-
 struct node
 {
-    int x, y;
-    int colour; //0 = green, 1 = black, 2 = red, 3 = blue, 4 = white
+    int row, col;
+    int colour;     //0 = green, 1 = black, 2 = red, 3 = blue, 4 = white
+    int dir;        //0 = north, 1 = east, 2 = south, 3 = west
     int time;
-    int dir; //0 = north, 1 = east, 2 = south, 3 = west
 
-    node() {}
-    node(int curX, int curY, int curColour=0, int curTime=0, int curDir=0)
+    const int dirX [4] = { -1, 0, +1, 0 };
+    const int dirY [4] = { 0, +1, 0, -1 };
+
+    node(){row = col = colour = dir = time = 0;}
+
+    node(int curRow, int curCol, int curColour = 0, int curDir = 0, int curTime = 0)
     {
-        x = curX; y = curY;
+        row = curRow;
+        col = curCol;
         colour = curColour;
-        time = curTime;
         dir = curDir;
+        time = curTime;
     }
 
-    node turn(int direction)   //direction 1 = right, direction 3 = left
+    node turn(int direction)
     {
-        return node( x, y,                           //x and y
-                     (dir + direction) % 4,          //direction
-                     colour,                         //colour
-                     time + 1);                      //time
+        return node(row, col,                   //row and column
+                    colour,                     //colour
+                    (dir + direction) % 4,      //direction
+                    time + 1);                  //time
     }
 
-    node moveForward()
+    node move()
     {
-        return node( x + dirY[dir], y + dirX[dir],  //x and y
-                     dir,                           //direction
-                     (colour + 1) % 5,              //colour
-                     time + 1);                     //time
-    }
-
-    bool valid()
-    {
-        // return (x + dirX[dir] < numRow &&  x + dirX[dir] >= 0) && 
-        //        (y + dirY[dir] < numCol && y + dirY[dir] >= 0);
-        return ((x + dirY[dir] < 1) ||  (x + dirY[dir] > numRow) ||
-               (y + dirX[dir] < 1) || (y + dirX[dir] > numCol));
-
+        return node(row + dirX[dir],            //row
+                    col + dirY[dir],            //column
+                    (colour + 1) % 5,           //colour
+                    dir,                        //direction
+                    time + 1);                  //time
     }
 
 };
 
+bool status [30][30][5][5];         //[row][col][direction][colour]
+char grid[30][30];
+int numRow, numCol;
+const int LEFT = 1;
+const int RIGHT = 3;
 node start;
+int cases = 1;
+
+void readInput();
+int solve();
+
 int main()
 {
     while(cin >> numRow >> numCol && (numRow && numCol))
     {
-        if(cases > 1)cout << endl;
+        if(cases > 1) {cout << endl;}
         readInput();
-        // print();
         int answer = solve();
         cout << "Case #" << cases++ << endl;
-        (answer != 0) ? cout << "minimum time = " << answer << " sec\n" :
-                       cout << "destination not reachable\n";
+        (answer != 0) ? cout << "minimum time = " <<  answer << " sec" << endl :
+                        cout << "destination not reachable" << endl;
     }
 }
 
 void readInput()
 {
     memset(status, false, sizeof(status));
-    memset(matrix, '#', sizeof(matrix));
-    for(int i = 1; i <= numRow; i++)
+    memset(grid, '#', sizeof(grid));
+
+    for(int curRow = 1; curRow <= numRow; curRow++)
     {
-        for(int j = 1; j <= numCol; j++)
+        for(int curCol = 1; curCol <= numCol; curCol++)
         {
-            cin >> matrix[i][j];
-            if(matrix[i][j] == 'S')
+            cin >> grid[curRow][curCol];
+            if(grid[curRow][curCol] == 'S')
             {
-                start = node(i, j, 0, 0, 0);
+                start.row = curRow;
+                start.col = curCol;
             }
         }
     }
@@ -99,43 +107,28 @@ int solve()
     while(!bfs.empty())
     {
         node curNode = bfs.front(); bfs.pop();
-        //check if the node is at the finish
-        // if(curNode.x == finish.x && curNode.y == finish.y && curNode.colour == finish.colour)
-        if(matrix[curNode.x][curNode.y] == 'T' && curNode.colour == 0)
+
+        //check if the node is at the finish line
+        if(grid[curNode.row][curNode.col] == 'T' && curNode.colour == 0)
         {
             return curNode.time;
         }
 
-        //ignore if current position is #, or
-        //already visited or
-        if( matrix[curNode.x][curNode.y] == '#' || 
-            status[curNode.x][curNode.y][curNode.dir][curNode.colour])
+        //check if the current position is a # or
+        //i've been here before, then ignore
+        if(grid[curNode.row][curNode.col] == '#' ||
+           status[curNode.row][curNode.col][curNode.dir][curNode.colour])
         {
-            continue; 
+            continue;
         }
 
-        //mark current coordinate as visited
-        status[curNode.x][curNode.y][curNode.dir][curNode.colour] = true;
+        //mark the current state is been visited
+        status[curNode.row][curNode.col][curNode.dir][curNode.colour] = true;
 
-        if(!curNode.valid())
-        {
-            bfs.push(curNode.moveForward());
-        }
-        bfs.push(curNode.turn(RIGHT));
+        //turn and move
         bfs.push(curNode.turn(LEFT));
-
+        bfs.push(curNode.turn(RIGHT));
+        bfs.push(curNode.move());
     }
     return 0;
-}
-
-void print()
-{
-    for(int i = 0; i <= numRow + 1; i++)
-    {
-        for(int j = 0; j <= numCol + 1; j++)
-        {
-            cout << matrix[i][j];
-        }
-        cout << endl;
-    }
 }
