@@ -30,7 +30,7 @@
 
 #--------------------------------------------
 
-CC = g++11
+CC = g++
 CFLAGS = -Wall -g -std=c++11
 MAKECMDGOALS := $(filter-out clean, $(MAKECMDGOALS))
 INCLUDE = -I./$(MAKECMDGOALS)
