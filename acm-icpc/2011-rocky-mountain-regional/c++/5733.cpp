@@ -1,65 +1,53 @@
+//DONE
+/*
+	Ad-hoc problem
+	Use two arrays. One for keeping track of the previous iteration and the
+	other to calculate the next iteration.
+	Check if either all the values in the first array are the same OR too many
+	iterations have occured. Otherwise perform the iterated difference. 
+*/
+
 #include <iostream>
-#include <vector>
-#include <cstdlib>
 #include <algorithm>
 
 using namespace std;
 
-int n;
-
-void print(int *values)
-{
-	for(int cur = 0; cur < n; cur++)
-				cout << values[cur] << " ";
-			cout << endl;
-}
-
 int main()
 {
+	int n;
+	int cases = 1;
 	while(cin >> n && n)
 	{
 		int values[20];
 		for(int i = 0; i < n; i++)
 			cin >> values[i];
 
-		print(values);
-		
-		bool done = false;
-		int cases = 1;
 		int newArray [n];
+		copy(values, values + n, newArray);
 		for(int i = 0; ; i++)
 		{
-			for(int k = 0; k <= n; k++)
-			{
-				if(i == 0)	//if it's the first iteration
-				{
-					newArray[k] = abs(values[k] - values[(k + 1) % n]);	
-				}
-				else
-				{
-					newArray[k % n] = abs(newArray[k % n] - newArray[(k + 1) % n]);
-				}
-			}
-
-			print(newArray);
-
-
+			//if all the values in the array the same
 			if(count(values, values + n, values[0]) == n)
 			{
 				cout << "Case " << cases++ << ": " << i << " iterations" << endl;
-				done = true;
 				break;
 			}
-
-			if(i == 999)
+			//if number of iterations are too many
+			else if(i == 999)
 			{
 				cout << "Case " << cases++ << ": not attained" << endl;
-				done = true;
 				break;
 			}
+			//perform the iteration difference
+			else
+			{
+				for(int k = 0; k < n; k++)
+				{
+					newArray[k % n] = abs(values[k % n] - values[(k + 1) % n]);
+				}
+
+				copy(newArray, newArray + n, values);
+			}
 		}
-
-	}	
-
-	return 0;
+	}
 }
