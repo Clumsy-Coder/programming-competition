@@ -2,9 +2,9 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <set>
 #include <cctype>
 #include <algorithm>
+#include <cstdlib>
 
 using namespace std;
 
@@ -37,11 +37,11 @@ int main()
 
 void readInput()
 {
-    for(int i = 0; i < numNames; i++)
+    for(int curName = 0; curName < numNames; curName++)
     {
-        string curName;
-        getline(cin, curName);
-        stringstream ss(curName);
+        string name;
+        getline(cin, name);
+        stringstream ss(name);
         string temp;
         vector <string> tempV;
         while(ss >> temp)
@@ -63,16 +63,11 @@ void readInput()
         transform(first.begin(), first.end(), first.begin(), ::tolower);
         transform(last.begin(), last.end(), last.begin(), ::tolower);
         names.push_back(person(first, last));
-
-        // cout << curName << endl;
-        // cout << first << " " << last << endl;
     }
-    // cout << endl;
 }
 
 void solve()
 {
-    // set <string> persons;
     vector<string> usernames;
     for(int i = 0; i < names.size(); i++)
     {
@@ -82,30 +77,33 @@ void solve()
         {
             if(isalpha(names[i].last[k]))
                 uname += names[i].last[k];
-
-            // cout << "uname: " << uname << endl;
         }
-        int counter = 0;
-        auto it = find(usernames.begin(), usernames.end(), uname);
-        // cout << "before while loop: " << (it != usernames.end() ? "uname found " : "uname not found ") << uname << endl;
-        while(it != usernames.end())
+        int counter = 1;
+        for(auto it = find(usernames.begin(), usernames.end(), uname);
+            it != usernames.end();
+            it = find(usernames.begin(), usernames.end(), uname), counter++)
         {
-            counter++;
+            //if the size of username is less than maxLen
             if(uname.size() < maxLen)
             {
-                if(counter <= 10)
+                //check the difference between the uname and the maxLen
+                int diff = abs((int)uname.size() - maxLen);
+                if(diff == 1 && counter < 10)
                 {
-                    uname.pop_back();
                     uname += to_string(counter);
                 }
                 else
                 {
-                    uname.pop_back();
-                    uname.pop_back();
+                    for(int k = 0; k < diff + 1; k++)
+                    {
+                        uname.pop_back();
+                    }
                     uname += to_string(counter);
                 }
+
             }
-            else
+            //if the size of username is equal to maxLen
+            else if(uname.size() == maxLen)
             {
                 if(counter < 10)
                 {
@@ -119,12 +117,29 @@ void solve()
                     uname += to_string(counter);
                 }
             }
+            //if the size of username is greater than maxLen
+            else if(uname.size() > maxLen)
+            {
+                int diff = abs((int)uname.size() - maxLen);
+                for(int k = 0; k < diff; k++)
+                {
+                    uname.pop_back();
+                }
 
-            // cout << uname << " " << uname.size() << endl;
-            it = find(usernames.begin(), usernames.end(), uname);
+                if(counter < 10)
+                {
+                    uname.pop_back();
+                    uname += to_string(counter);
+                }
+                else
+                {
+                    uname.pop_back();
+                    uname.pop_back();
+                    uname += to_string(counter);
+                }
+            }
         }
         usernames.push_back(uname);
-        // cout << "added: " << uname << "\tsize: " << usernames.size() << endl;
     }
     cout << "Case " << cases++ << endl;
     for(auto u : usernames)
