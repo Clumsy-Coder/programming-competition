@@ -21,17 +21,18 @@
 using namespace std;
 
 void readInput();
-void solve(string uname);
+void solve(string username);
 
 int numNames, maxLen;
 int cases = 1;
-map<string, int> usernameMap;
+map<string, int> uMap;
+
 int main()
 {
     while(cin >> numNames >> maxLen && (numNames && maxLen))
     {
         cout << "Case " << cases++ << endl;
-        usernameMap.clear();
+        uMap.clear();
         cin.ignore();
         readInput();
     }
@@ -41,70 +42,46 @@ void readInput()
 {
     for(int curName = 0; curName < numNames; curName++)
     {
-        string getName;
-        getline(cin, getName);
+        string getName; getline(cin, getName);
         stringstream ss(getName);
-        string temp;
-        vector <string> tempV;
+        string temp; vector <string> tempV;
         while(ss >> temp)
         {
             tempV.push_back(temp);
         }
 
-        string first, last;
-        if(tempV.size() == 2)
-        {
-            first = tempV[0];
-            last = tempV[1];
-        }
-        else
-        {
-            first = tempV[0];
-            last = tempV[tempV.size() - 1];
-        }
+        string first = tempV[0];
+        string last = tempV[tempV.size() - 1];
 
         transform(first.begin(), first.end(), first.begin(), ::tolower);
         transform(last.begin(), last.end(), last.begin(), ::tolower);
 
-        string uname = ""; uname += first[0];
-        for(int k = 0; k < last.size() && uname.size() < maxLen; k++)
-        {
-            if(isalpha(last[k]))
-                uname += last[k];
-        }
+        string username = ""; username += first[0];
+        for(int i = 0; i < last.size() && username.size() < maxLen; i++)
+            if(isalpha(last[i]))
+                username += last[i];
 
-        if(usernameMap.find(uname) == usernameMap.end())
-        {
-            usernameMap[uname] = 0;
-        }
+        if(uMap.find(username) == uMap.end())
+            uMap[username] = 0;
         else
-        {
-            usernameMap[uname]++;
-        }
+            uMap[username]++;
 
-        solve(uname);
+        solve(username);
     }
 }
 
-void solve(string uname)
+void solve(string username)
 {
-    int counter = usernameMap[uname];
+    int counter = uMap[username];
     if(counter != 0)
     {
-        if(abs((int)uname.size() + (counter < 10 ? 1 : 2)) < maxLen)
+        //pop of the last character as long the size of the username and
+        //counter (1 digit or 2 digits) is greater than maxLen
+        while(username.size() + (counter < 10 ? 1 : 2) > maxLen)
         {
-            uname += to_string(counter);
+            username.pop_back();
         }
-        else
-        {
-            //pop of the last character as long the size of the username and
-            //counter (1 digit or 2 digits) is greater than maxLen
-            while(abs((int)uname.size() + (counter < 10 ? 1 : 2)) > maxLen)
-            {
-                uname.pop_back();
-            }
-            uname += to_string(counter);
-        }
+        username += to_string(counter);
     }
-    cout << uname << endl;
+    cout << username << endl;
 }
