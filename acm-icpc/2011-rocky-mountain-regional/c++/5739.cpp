@@ -1,37 +1,39 @@
-//IN PROGRESS
+//DONE
+/*
+    String processing problem
+
+    add the first char of the firstname
+    append all alphabets  of the lastname up the maxLen,
+    check if the username existes in the map.
+        if true: then add an entry with value of 0
+        else: incrment the value using the username as the key
+    print out the username with the apprpiate conditions using
+        the counter value in the map
+*/
+
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <cctype>
 #include <algorithm>
 #include <cstdlib>
+#include <map>
 
 using namespace std;
 
-struct person
-{
-    string first, last;
-    person(string firstname, string lastname)
-    {
-        first = firstname;
-        last = lastname;
-    }
-};
-
 void readInput();
-void solve();
+void solve(string uname);
 
 int numNames, maxLen;
 int cases = 1;
-vector<person> names;
+map<string, int> usernameMap;
 int main()
 {
     while(cin >> numNames >> maxLen && (numNames && maxLen))
     {
-        names.clear();
+        cout << "Case " << cases++ << endl;
+        usernameMap.clear();
         cin.ignore();
         readInput();
-        solve();
     }
 }
 
@@ -39,9 +41,9 @@ void readInput()
 {
     for(int curName = 0; curName < numNames; curName++)
     {
-        string name;
-        getline(cin, name);
-        stringstream ss(name);
+        string getName;
+        getline(cin, getName);
+        stringstream ss(getName);
         string temp;
         vector <string> tempV;
         while(ss >> temp)
@@ -60,88 +62,49 @@ void readInput()
             first = tempV[0];
             last = tempV[tempV.size() - 1];
         }
+
         transform(first.begin(), first.end(), first.begin(), ::tolower);
         transform(last.begin(), last.end(), last.begin(), ::tolower);
-        names.push_back(person(first, last));
+
+        string uname = ""; uname += first[0];
+        for(int k = 0; k < last.size() && uname.size() < maxLen; k++)
+        {
+            if(isalpha(last[k]))
+                uname += last[k];
+        }
+
+        if(usernameMap.find(uname) == usernameMap.end())
+        {
+            usernameMap[uname] = 0;
+        }
+        else
+        {
+            usernameMap[uname]++;
+        }
+
+        solve(uname);
     }
 }
 
-void solve()
+void solve(string uname)
 {
-    vector<string> usernames;
-    for(int i = 0; i < names.size(); i++)
+    int counter = usernameMap[uname];
+    if(counter != 0)
     {
-        string uname = "";
-        uname += names[i].first[0];
-        for(int k = 0; k < names[i].last.size() && uname.size() < maxLen; k++)
+        if(abs((int)uname.size() + (counter < 10 ? 1 : 2)) < maxLen)
         {
-            if(isalpha(names[i].last[k]))
-                uname += names[i].last[k];
+            uname += to_string(counter);
         }
-        int counter = 1;
-        for(auto it = find(usernames.begin(), usernames.end(), uname);
-            it != usernames.end();
-            it = find(usernames.begin(), usernames.end(), uname), counter++)
+        else
         {
-            //if the size of username is less than maxLen
-            if(uname.size() < maxLen)
+            //pop of the last character as long the size of the username and
+            //counter (1 digit or 2 digits) is greater than maxLen
+            while(abs((int)uname.size() + (counter < 10 ? 1 : 2)) > maxLen)
             {
-                //check the difference between the uname and the maxLen
-                int diff = abs((int)uname.size() - maxLen);
-                if(diff == 1 && counter < 10)
-                {
-                    uname += to_string(counter);
-                }
-                else
-                {
-                    for(int k = 0; k < diff + 1; k++)
-                    {
-                        uname.pop_back();
-                    }
-                    uname += to_string(counter);
-                }
-
+                uname.pop_back();
             }
-            //if the size of username is equal to maxLen
-            else if(uname.size() == maxLen)
-            {
-                if(counter < 10)
-                {
-                    uname.pop_back();
-                    uname += to_string(counter);
-                }
-                else
-                {
-                    uname.pop_back();
-                    uname.pop_back();
-                    uname += to_string(counter);
-                }
-            }
-            //if the size of username is greater than maxLen
-            else if(uname.size() > maxLen)
-            {
-                int diff = abs((int)uname.size() - maxLen);
-                for(int k = 0; k < diff; k++)
-                {
-                    uname.pop_back();
-                }
-
-                if(counter < 10)
-                {
-                    uname.pop_back();
-                    uname += to_string(counter);
-                }
-                else
-                {
-                    uname.pop_back();
-                    uname.pop_back();
-                    uname += to_string(counter);
-                }
-            }
+            uname += to_string(counter);
         }
-        usernames.push_back(uname);
     }
-    cout << "Case " << cases++ << endl;
-    for(auto u : usernames)
-        cout << u << endl;
+    cout << uname << endl;
 }
