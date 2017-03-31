@@ -251,6 +251,10 @@ int main()
 									// which will always be the last char
 									// in the suffix array because it has
 									// the largest ascii value.
+									// ascii value is 124, which is higher
+									// than the ascii value of the alphabets
+									// this will deal with the tie breaking
+									// condition.
 									// from Competitve Programming 3 pg 250
 		int suffix[10001 * 2];		// 10000 max size of a string.
 									// x2 for append the string twice
