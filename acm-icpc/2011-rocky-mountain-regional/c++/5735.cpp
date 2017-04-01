@@ -1,6 +1,20 @@
+//DONE
+
+/*
+	Ad-hoc problem
+	summary: store the values in a vector of pairs.
+				the first value is the price and the second is the time.
+		   	 sort the vector lexicographically
+		     get the k1 time values in a vector and sort in ascending order
+		     get the k2 time values in a vector and sort in descending order
+		     print the values
+
+*/
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 using namespace std;
 
@@ -8,7 +22,7 @@ void readInput();
 void solve();
 
 vector<pair<int, int>> stocks;
-unsigned long long n, k1, k2, cases = 1;
+int n, k1, k2, cases = 1;
 
 int main()
 {
@@ -23,37 +37,42 @@ int main()
 void readInput()
 {
 	stocks.clear();
-	for(unsigned long long i = 0; i < n; i++)
+	for(int i = 0; i < n; i++)
 	{
-		long long price; cin >> price;
-		pair<int, int> stockPrice(price, i + 1);	//stock price, date (in this case a counter)
-		stocks.push_back(stockPrice);
+		int price; cin >> price;
+		stocks.push_back(make_pair(price, i + 1));
 	}
 
-	sort(stocks.begin(), stocks.end(), [](pair<int,int> &left, pair<int,int> &right) {
-		return left.first < right.first;
-	});
+	//sort the vector lexicographically
+	sort(stocks.begin(), stocks.end());
 
 }
 
 void solve()
 {
-	vector <pair<int, int> > k1V(stocks.begin(), stocks.begin() + k1);
-	vector <pair<int, int> > k2V(stocks.end() - k2, stocks.end());
+	vector<int> k1V, k2V;
+	//get the k1 values
+	for(int i = 0; i < k1; i++)
+	{
+		k1V.push_back(stocks[i].second);
+	}
 
-	sort(k1V.begin(), k1V.end(), [](pair<int,int> &left, pair<int,int> &right) {
-		return left.second < right.second;
-	});
+	//get the k2 values
+	for(int i = n - k2; i < n; i++)
+	{
+		k2V.push_back(stocks[i].second);
+	}
 
-	sort(k2V.begin(), k2V.end(), [](pair<int,int> &left, pair<int,int> &right) {
-		return left.second > right.second;
-	});
+	//sort in ascending order
+	sort(k1V.begin(), k1V.end());
+	//sort in descending order
+	sort(k2V.begin(), k2V.end(),  greater<int>());
 
 	for(int i = 0; i < k1V.size(); i++)
-		cout << k1V[i].second << (i != k1V.size() - 1 ? " " : "");
+		cout << k1V[i] << (i != k1V.size() - 1 ? " " : "");
 	cout << endl;
 
 	for(int i = 0; i < k2V.size(); i++)
-		cout << k2V[i].second << (i != k2V.size() - 1 ? " " : "");
+		cout << k2V[i] << (i != k2V.size() - 1 ? " " : "");
 	cout << endl;
 }
