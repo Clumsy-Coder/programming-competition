@@ -1,5 +1,15 @@
+/*
+    Problem type: Graph
+    Data structure: struct, 2D, 3D array and queue
+    Algorithm: BFS
+    Summary: visited each node ONLY once and append the 
+             values from the previous path until you reached 
+             the destination. mod the values to prevent overflow
+             Only choose the smaller paths.
+
+*/
+
 #include <iostream>
-#include <string.h>
 #include <algorithm>
 #include <queue>
 
@@ -35,111 +45,121 @@ struct node
     }
 };
 
-bool status [1002][1002][5];
-char grid[1002][1002];
-int numRow, numCol;
-unsigned long long mod = 0;
-// long long numPossiblePaths = 0;
-const int LEFT = 1;
-const int RIGHT = 3;
-const string direction = "NESW"; //north, east, south and west;
-int cases = 1;
-node start, finish;
 
 void readInput();
-long long solve();
+void solve();
+void printAns();
+void addState(queue <node> &bfs, const node &curNode, const node &nextNode);
 
-void print()
-{
-    for(int curRow = 1; curRow <= numRow; curRow++)
-    {
-        for(int curCol = 1; curCol <= numCol; curCol++)
-        {
-            cout << grid[curRow][curCol];
-        }
-        cout << endl;
-    }
-
-    cout << "start: row: " << start.row << "\tcol: " << start.col << "\tdir: " << direction[start.dir] << endl;;
-    cout << "end: row: " << finish.row << "\tcol: " << finish.col << endl;
-}
+const int LEFT = 1, RIGHT = 3;
+const string direction = "NESW"; //north, east, south and west;
+node start, finish;
+long long numRows, numCols, mod, cases = 1;
+char grid [1002][1002];
+long long dist [1002][1002][5]; // only contains the shortest path [max rows][max columns][4 directions + 1]
+long long paths[1002][1002][5]; // contains # of ways to get from point A to point B
 
 int main()
 {
-    while(std::cin >> numRow >> numCol >> mod && (numRow && numCol && mod))
+    while(cin >> numRows >> numCols >> mod && (numRows && numCols && mod))
     {
         readInput();
-        long long ans = solve();
-        if(ans == 0)
-        {
-            cout << "Case " << cases++ << ": " << mod << " -1" << endl;
-        }
-        else
-        {
-            cout << "Case " << cases++ << ": " << mod << " " << ans % mod << endl;
-        }
-        // cout << "---------------------" << endl;
+        solve();
+        printAns();
     }
 }
 
 void readInput()
 {
-    // numPossiblePaths = 0;
-    memset(status, false, sizeof(status));
-    memset(grid, '*', sizeof(grid));
+    // clear the data
+    fill(grid[0], grid[1001] + 1002, '*');
+    fill(dist[0][0], dist[1001][1001] + 5, -1);
+    fill(paths[0][0], paths[1001][1001] + 5, 0);
 
-    for(int curRow = 1; curRow <= numRow; curRow++)
-    {
-        for(int curCol = 1; curCol <= numCol; curCol++)
-        {
-            cin >> grid[curRow][curCol];
-        }
-    }
+    for(int i = 1; i <= numRows; i++)
+        for(int k = 1; k <= numCols; k++)
+            cin >> grid[i][k];
 
-    cin >> start.row >> start.col;
-    cin >> finish.row >> finish.col;
-
+    cin >> start.row>> start.col; start.row++; start.col++;
+    cin >> finish.row >> finish.col; finish.row++; finish.col++;
     char startDir; cin >> startDir;
     start.dir = find(direction.begin(), direction.end(), startDir) - direction.begin();
-    // print();
-
 }
 
-long long solve()
+// use bfs to go through the grid
+void solve()
 {
     queue <node> bfs;
     bfs.push(start);
-
-    long long numPossiblePaths = 0;
+    paths[start.row][start.col][start.dir] = 1;
 
     while(!bfs.empty())
     {
         node curNode = bfs.front(); bfs.pop();
 
-        //check if the node is at the finish line
-        if(start.row == finish.row && start.col == finish.col)
+        // reached the destination
+        if( curNode.row == finish.row && 
+            curNode.col == finish.col)
         {
-            numPossiblePaths++;
-            continue;
-            // return curNode.time;
+            break;
         }
 
-        //check if the current position is a # or
-        //i've been here before, then ignore
-        if(grid[curNode.row][curNode.col] == '*' ||
-           status[curNode.row][curNode.col][curNode.dir])
+        if( grid[curNode.row][curNode.col] != '*')
         {
-            continue;
+            addState(bfs, curNode, curNode.move());
         }
 
-        //mark the current state is been visited
-        status[curNode.row][curNode.col][curNode.dir] = true;
+        addState(bfs, curNode, curNode.turn(LEFT));
+        addState(bfs, curNode, curNode.turn(RIGHT));
+    }
+}
 
-        //turn and move
-        bfs.push(curNode.turn(LEFT));
-        bfs.push(curNode.turn(RIGHT));
-        bfs.push(curNode.move());
+void addState(queue <node> &bfs, const node &curNode, const node &nextNode)
+{
+    long long curDist = dist[curNode.row][curNode.col][curNode.dir];
+    long long nextDist = dist[nextNode.row][nextNode.col][nextNode.dir];
+    long long curPaths = paths[curNode.row][curNode.col][curNode.dir];
+    // check the nextNode distance is visited AND is smaller than 
+    // the smallest distance recorded
+    // ignore it since, we already been there
+    if(nextDist >= 0 && nextDist < curDist + 1)
+    {
+        return;
+    }
+    // explore the ones that aren't visited
+    if(nextDist < 0)
+    {
+        bfs.push(nextNode);
     }
 
-    return numPossiblePaths;
+    // add the distance, increment the paths and mod it so it doesn't overflow
+    dist[nextNode.row][nextNode.col][nextNode.dir] = curDist + 1;
+    paths[nextNode.row][nextNode.col][nextNode.dir] += curPaths;
+    paths[nextNode.row][nextNode.col][nextNode.dir] %= mod;
+    
 }
+
+void printAns()
+{
+    cout << "Case " << cases++ << ": " << mod << " ";
+
+    long long answer = 0;
+    bool ansFound = false;
+    for(int i = 0; i < 4; i++)
+    {
+        answer += paths[finish.row][finish.col][i];
+        if(dist[finish.row][finish.col][i] >= 0)
+        {
+            ansFound = true;
+        }
+    }
+
+    if(ansFound || answer)
+    {
+        cout << (answer % mod) << endl;
+    }
+    else
+    {
+        cout << "-1" << endl;
+    }
+}   
