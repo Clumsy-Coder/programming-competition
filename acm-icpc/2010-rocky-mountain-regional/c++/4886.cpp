@@ -1,93 +1,93 @@
+// DONE
+/*
+	Problem type: string processing, Ad-hoc, data structure
+	Data structure: bitset, vector
+	Algorithm: linear pass
+	Summary: - tokenize by page ranges and store them in a vector of strings.
+			 - iterate through each page ranges, extract the ranges and store
+			   them in a vector if long long.
+			 - print the page if it's within total pages.
+			 - print the pages printed.
+*/
+
 #include <iostream>
-#include <set>
 #include <string>
 #include <sstream>
 #include <vector>
 #include <bitset>
-#include <algorithm>
 
 using namespace std;
 
-// vector<bool> pages;
 bitset<1001> pages;
-string line;
+string printOrder;
 long long totalPages;
+vector<string> pOrder;
 
-void readInput();
-void solve();
-void parsePageRanges(const vector<string> &pageRanges);
-void markPages(const vector<long long> &ranges);
-void print();
+void tokenizePrintOrder();
+void tokenizeRange();
+void printPage(const vector<long long> &ranges);
 
 int main()
 {
-	string numPages;
-	while(getline(cin, numPages) && numPages != "0")
+	string temp;
+	while(getline(cin, temp) && temp != "0")
 	{
-		totalPages = stol(numPages);
-		getline(cin, line);
-		solve();
+		pOrder.clear();
+		pages.reset();
+		totalPages = stol(temp);
+		getline(cin, printOrder);
+		tokenizePrintOrder();
+		tokenizeRange();
+		cout << pages.count() << endl;
 	}
 }
 
-void solve()
+// seperate by page orders
+void tokenizePrintOrder()
 {
-	pages.reset();
-	string pageRanges;
-	vector<string> ranges;
-	stringstream ss(line);
-	while(getline(ss, pageRanges, ','))
+	stringstream ss(printOrder);
+	string temp;
+	while(getline(ss, temp, ','))
 	{
-		ranges.push_back(pageRanges);
+		pOrder.push_back(temp);
 	}
-	parsePageRanges(ranges);
-	cout << pages.count() << endl;
 }
 
-void parsePageRanges(const vector<string> &pageRanges)
+// seperate by page ranges
+void tokenizeRange()
 {
-	for(unsigned long long i = 0; i < pageRanges.size(); i++)
+	for(int i = 0; i < pOrder.size(); i++)
 	{
-		vector<long long> range;
-		stringstream ss(pageRanges[i]);
-		string pages;
-		while(getline(ss, pages, '-'))
+		stringstream ss(pOrder[i]);
+		string temp;
+		vector<long long> ranges;
+		while(getline(ss, temp, '-'))
 		{
-			range.push_back(stol(pages));
+			ranges.push_back(stol(temp));
 		}
-		// sort(range.begin(), range.end());
-		markPages(range);
+		printPage(ranges);
 	}
 }
 
-void markPages(const vector<long long> &ranges)
+void printPage(const vector<long long> &ranges)
 {
 	if(ranges.size() == 1)
 	{
-		pages[ranges[0] - 1] = 1;
+		if(ranges[0] <= totalPages)
+		{
+			pages[ranges[0] - 1] = true;
+		}
 	}
 	else
 	{
-		if(is_sorted(ranges.begin(), ranges.end()))
+		// also deals with if the first number is higher than the second number
+		// ex: print range 8-4. the for loop will ignore them.
+		for(int i = ranges[0]; i <= ranges[1]; i++)
 		{
-			for(int i = ranges[0] - 1; i < ranges[1] && i < totalPages; i++)
+			if(i <= totalPages)
 			{
-				pages[i] = 1;
+				pages[i - 1] = true;
 			}
 		}
 	}
-}
-
-void print()
-{
-	cout << endl;
-	for(int i = 0; i <= totalPages; i++)
-	{
-		if(pages[i] == 1)
-		{
-			cout << i + 1 << "\t" << pages[i] << endl;
-		}
-	}
-
-	cout << endl;
 }
