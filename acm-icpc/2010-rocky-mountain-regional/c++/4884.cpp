@@ -48,9 +48,9 @@ double area_polygon(Point polygon[], int n)
 void solve();
 void generatePolygon();
 
-//                    0   1   2   3   4   5  6  7
-const int dirX[8] = { 0, -1, -1, -1,  0,  1, 1, 1 };
-const int dirY[8] = { 1,  1,  0, -1, -1, -1, 0, 1 };
+//                    0   1   2   3   4   5   6   7
+const int dirX[8] = { 0, -1, -1, -1,  0,  1,  1,  1 };
+const int dirY[8] = { 1,  1,  0, -1, -1, -1,  0,  1 };
 string chainCode;
 // vector<pair<long long, long long>> polygon;
 // Point polygon [100001] ;
@@ -66,13 +66,17 @@ int main()
 
 void generatePolygon()
 {
-    Point *polygon = new Point[chainCode.size()];
+    // Point *polygon = new Point[chainCode.size()];
+    Point polygon[chainCode.size() + 1];
     polygon[0].x = 0;
     polygon[0].y = 0;
     double minX = LONG_MAX;
     double minY = LONG_MAX;
+    cout << "chaincode size: " << chainCode.size() << endl;
+    cout << "x:\t" << polygon[0].x << "\ty:\t" << polygon[0].y << endl;
     for(int i = 0; i < chainCode.size(); i++)
     {
+        if(i == chainCode.size() + 1) break;
         Point prev = polygon[i];
         double x = prev.x + dirX[chainCode[i] - '0'];
         double y = prev.y + dirY[chainCode[i] - '0'];
@@ -83,17 +87,17 @@ void generatePolygon()
         cout << "x:\t" << x << "\ty:\t" << y << endl;
     }
 
-    cout << "minX: " << minX << "\n" << "minY: " <<  minY << endl;
+    // cout << "minX: " << minX << "\n" << "minY: " <<  minY << endl;
 
     minX = abs(minX);
     minY = abs(minY);
     // translate the polygon so all the points are positive
-    for(int i = 0; i < chainCode.size(); i++)
-    {
-        polygon[i].x += minX;
-        polygon[i].y += minY;
-    }
+    // for(int i = 0; i < chainCode.size(); i++)
+    // {
+    //     polygon[i].x += minX;
+    //     polygon[i].y += minY;
+    // }
     cout << "area: " << area_polygon(polygon, chainCode.size()) << endl;
 
-    delete[] polygon;
+    // delete[] polygon;
 }
