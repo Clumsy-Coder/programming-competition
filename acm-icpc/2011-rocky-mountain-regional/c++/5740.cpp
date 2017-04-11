@@ -1,10 +1,6 @@
 #include <vector>
-#include <utility>
-#include <stdlib.h>
-#include <math.h>
 
-//-------------------------------------------------------------------------//
-// Howard Cheng's code
+
 //
 // Date class
 //
@@ -93,10 +89,10 @@ struct Date {
       return 30;
     case 2  :
       if (leapYear(y)) {
-	return 29;
+    return 29;
       }
       else {
-	return 28;
+    return 28;
       }
     default :
       return 31;
@@ -121,15 +117,15 @@ struct Date {
     while (dd > daysIn(mm,yyyy)) {
       dd -= daysIn(mm,yyyy);
       if (++mm > 12) {
-	mm = 1;
-	yyyy++;
+    mm = 1;
+    yyyy++;
       }
     }
     
     while (dd < 1) {
       if (--mm < 1) {
-	mm = 12;
-	yyyy--;
+    mm = 12;
+    yyyy--;
       }
       dd += daysIn(mm,yyyy); 
     }
@@ -209,88 +205,24 @@ ostream& operator<< (ostream &os, const Date &d) {
   return os;
 }
 
-// END Howard Cheng's code
 //-------------------------------------------------------------------------//
 
-vector<pair<Date, Date>> vacations;
-Date startRes, landRes;
-
 void readInput();
-void solve();
-long long calcStartRes_landRes_days();
-long long calcVacationDays();
+
+Date startRes, landRes;
+vector <pair<Date, Date>> vacations;
 
 int main()
 {
     while(cin >> startRes >> landRes)
     {
         readInput();
-        solve();
-        cout << "------------------------\n";
     }
 }
 
 void readInput()
-{
-    vacations.clear();
-    long long numVacations;
+{ 
+    long long numVacations
     cin >> numVacations;
-    for(long long i = 0; i < numVacations; i++)
-    {
-        Date start, end;
-        cin >> start >> end;
-        vacations.push_back(make_pair(start, end));
-    }
-}
-
-void solve()
-{
-    //days from startRes to landRes
-    long long startRes_landRes = floor((long double)calcStartRes_landRes_days() / 2); 
-    long long numVacationsDays = calcVacationDays();
-    long long numDaysInCanada = abs(startRes_landRes - numVacationsDays);
-    long long numDaysNeeded = abs(1095 - numDaysInCanada);
-
-    cout << "startRes_landRes: " << startRes_landRes << endl;
-    cout << "numVacationsDays: " << numVacationsDays << endl;
-    cout << "numDaysInCanada: " << numDaysInCanada << endl;
-    cout << "numDaysNeeded: " << numDaysNeeded << endl;
-
-    Date tempStartLandRes = landRes;
-    // for(unsigned long long i = 0; i < numDaysNeeded; i++, tempStartLandRes.addDay());
-    tempStartLandRes.addDay(numDaysNeeded);
-    cout << "final answer: " << tempStartLandRes << endl;        
-
-}
-
-long long calcStartRes_landRes_days()
-{
-    long long numDays = 0;
-    Date startResTemp = startRes;
-    Date landResTemp = landRes;
-
-    for(; startResTemp <= landResTemp; startResTemp.addDay(), numDays++);
-
-    return (numDays > 730) ? 730 : numDays;
-
-}
-
-long long calcVacationDays()
-{
-    cout << "vacations.size() : " << vacations.size() << endl;
-
-    long long numDays = 0;
-
-    for(unsigned long long i = 0; i < vacations.size(); i++)
-    {
-        unsigned long long k = 0;
-        Date start = vacations[i].first;
-        Date end = vacations[i].second;
-        cout << "vacation[" << i << "]: " << start << "\t" << end << ": => ";
-        for(; start <= end; start.addDay(), k++);
-        cout << k << " days\n";
-        numDays += k;
-    }
-
-    return numDays;
+    
 }
